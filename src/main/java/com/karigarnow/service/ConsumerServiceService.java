@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,20 +45,23 @@ public class ConsumerServiceService {
         AppService appService = appServiceRepository.findBySlugAndIsActiveTrue(slug)
                 .orElseThrow(() -> new ResourceNotFoundException("Service not found"));
 
-        Sort sortOrder = sort.equalsIgnoreCase("price")
-                ? Sort.by(Sort.Direction.ASC, "customRate")
-                : Sort.by(Sort.Direction.DESC, "ratingAverage");
-
-        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        boolean sortByPrice = sort.equalsIgnoreCase("price");
+        Pageable pageable = PageRequest.of(page, size);
 
         Page<ThekedarService> thekedarServices;
 
         if (search != null && !search.isBlank()) {
-            thekedarServices = thekedarServiceRepository.findByServiceIdAndThekedarIsOnlineAndSearch(
-                    appService.getId(), search.trim(), pageable);
+            thekedarServices = sortByPrice
+                    ? thekedarServiceRepository.findByServiceIdAndThekedarIsOnlineAndSearchOrderByPrice(
+                            appService.getId(), search.trim(), pageable)
+                    : thekedarServiceRepository.findByServiceIdAndThekedarIsOnlineAndSearch(
+                            appService.getId(), search.trim(), pageable);
         } else {
-            thekedarServices = thekedarServiceRepository.findByServiceIdAndThekedarIsOnline(
-                    appService.getId(), pageable);
+            thekedarServices = sortByPrice
+                    ? thekedarServiceRepository.findByServiceIdAndThekedarIsOnlineOrderByPrice(
+                            appService.getId(), pageable)
+                    : thekedarServiceRepository.findByServiceIdAndThekedarIsOnline(
+                            appService.getId(), pageable);
         }
 
         List<ThekedarSummaryResponse> thekedarSummaries = thekedarServices.getContent().stream()
