@@ -226,6 +226,159 @@ Authenticate using Google OAuth token.
 
 ---
 
+## Consumer Services
+
+### 5. List Services
+
+**GET** `/api/services`
+
+Returns all active service categories available for booking.
+
+**Auth:** No
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Services fetched successfully",
+  "data": [
+    {
+      "id": "uuid",
+      "slug": "plumbing",
+      "name": "Plumbing",
+      "description": "Pipe fitting, leakage repair, tap, drain cleaning"
+    }
+  ]
+}
+```
+
+---
+
+### 6. Get Service by Slug
+
+**GET** `/api/services/{slug}`
+
+Returns service details with a paginated list of online thekedars offering this service.
+
+**Auth:** No
+
+**Path Parameters:**
+| Field | Type | Description |
+|-------|------|-------------|
+| slug | string | Service slug (e.g. `plumbing`, `electrical`) |
+
+**Query Parameters:**
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| search | string | — | Search by thekedar name or location |
+| page | int | 0 | Page number (0-indexed) |
+| size | int | 10 | Page size |
+| sort | string | `rating` | Sort by `rating` or `price` |
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Service fetched successfully",
+  "data": {
+    "service": {
+      "id": "uuid",
+      "slug": "plumbing",
+      "name": "Plumbing",
+      "description": "Pipe fitting, leakage repair, tap, drain cleaning"
+    },
+    "thekedars": {
+      "content": [
+        {
+          "id": "uuid",
+          "name": "Ramesh Plumber",
+          "photo": "https://...",
+          "rating_average": 4.50,
+          "custom_rate": 500.00,
+          "experience": "10 years",
+          "total_jobs": 120,
+          "location": "Sector 15, Noida",
+          "is_online": true
+        }
+      ],
+      "totalPages": 2,
+      "totalElements": 14,
+      "currentPage": 0
+    }
+  }
+}
+```
+
+**Error (404 Not Found):**
+```json
+{
+  "success": false,
+  "message": "Service not found",
+  "data": null
+}
+```
+
+---
+
+### 7. Get Thekedar Profile
+
+**GET** `/api/thekedars/{id}`
+
+Returns the full profile of a thekedar including services offered and recent reviews.
+
+**Auth:** No
+
+**Path Parameters:**
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Thekedar ID |
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Thekedar profile fetched successfully",
+  "data": {
+    "id": "uuid",
+    "name": "Ramesh Plumber",
+    "photo": "https://...",
+    "bio": "Expert plumber with 10 years of experience",
+    "experience": "10 years",
+    "rating_average": 4.50,
+    "total_jobs": 120,
+    "location": "Sector 15, Noida",
+    "services": [
+      {
+        "id": "uuid",
+        "slug": "plumbing",
+        "name": "Plumbing",
+        "custom_rate": 500.00
+      }
+    ],
+    "reviews": [
+      {
+        "id": "uuid",
+        "consumer_name": "Amit S.",
+        "rating": 5,
+        "comment": "Excellent work, very professional",
+        "created_at": "2026-03-15T10:30:00"
+      }
+    ]
+  }
+}
+```
+
+**Error (404 Not Found):**
+```json
+{
+  "success": false,
+  "message": "Thekedar not found",
+  "data": null
+}
+```
+
+---
+
 ## Future Endpoints (To Be Implemented)
 
 ### Auth Module

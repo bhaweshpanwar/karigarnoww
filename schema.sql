@@ -133,3 +133,34 @@ CREATE TABLE earnings (
   net_amount DECIMAL(10,2),
   paid_at TIMESTAMP DEFAULT NOW()
 );
+
+-- APP SERVICES (maintained by us)
+CREATE TABLE app_services (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  description TEXT,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- THEKEDAR SERVICES (services offered by thekedars)
+CREATE TABLE thekedar_services (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  thekedar_id UUID REFERENCES thekedars(id) ON DELETE CASCADE,
+  service_id UUID REFERENCES app_services(id) ON DELETE CASCADE,
+  custom_rate DECIMAL(10,2),
+  UNIQUE(thekedar_id, service_id)
+);
+
+
+--RAW DATA FOR SERVICES
+INSERT INTO app_services (slug, name, description) VALUES
+('plumbing', 'Plumbing', 'Pipe fitting, leakage repair, tap, drain cleaning'),
+('painting', 'Wall Painting', 'Interior, exterior, texture, waterproofing coats'),
+('electrical', 'Electrical', 'Wiring, switchboard, fan, light fitting, MCB work'),
+('putty-plaster', 'Putty & Plaster', 'Wall putty, ceiling plaster, crack filling'),
+('tiling', 'Tile Installation', 'Floor, bathroom, kitchen tiles'),
+('carpentry', 'Carpentry', 'Doors, windows, furniture assembly, shelves'),
+('waterproofing', 'Waterproofing', 'Terrace, bathroom, basement waterproofing'),
+('cleaning', 'Deep Cleaning', 'Full home cleaning, sofa, carpet, kitchen');
