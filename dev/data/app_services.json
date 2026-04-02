@@ -1,0 +1,10 @@
+[
+{"slug": "plumbing", "name": "Plumbing", "description": "Pipe fitting, leakage repair, tap, drain cleaning", "is_active": true},
+{"slug": "painting", "name": "Wall Painting", "description": "Interior, exterior, texture, waterproofing coats", "is_active": true},
+{"slug": "electrical", "name": "Electrical", "description": "Wiring, switchboard, fan, light fitting, MCB work", "is_active": true},
+{"slug": "putty-plaster", "name": "Putty & Plaster", "description": "Wall putty, ceiling plaster, crack filling", "is_active": true},
+{"slug": "tiling", "name": "Tile Installation", "description": "Floor, bathroom, kitchen tiles", "is_active": true},
+{"slug": "carpentry", "name": "Carpentry", "description": "Doors, windows, furniture assembly, shelves", "is_active": true},
+{"slug": "waterproofing", "name": "Waterproofing", "description": "Terrace, bathroom, basement waterproofing", "is_active": true},
+{"slug": "cleaning", "name": "Deep Cleaning", "description": "Full home cleaning, sofa, carpet, kitchen", "is_active": true}
+]

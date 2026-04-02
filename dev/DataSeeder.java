@@ -27,7 +27,13 @@ import java.util.regex.*;
  */
 public class DataSeeder {
 
-    private static final String DATA_DIR = "dev/data";
+    private static final Path DATA_DIR;
+
+    static {
+        // Resolve dev/data relative to where the project root is (one level up from dev/)
+        Path devDir = Paths.get("dev");
+        DATA_DIR = devDir.resolve("data");
+    }
     private static final Pattern EMAIL_PATTERN = Pattern.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
 
     private final String dbUrl;
@@ -268,7 +274,7 @@ public class DataSeeder {
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (JsonNode node : data) {
-                UUID userId = getUserIdByEmail(node.get("thekedar_email").asText());
+                UUID userId = getUserIdByEmail(node.get("user_email").asText());
 
                 ps.setObject(1, userId);
                 ps.setString(2, node.has("bio") ? node.get("bio").asText() : null);
@@ -320,7 +326,7 @@ public class DataSeeder {
 
         String sql = """
             INSERT INTO workers (thekedar_id, name, mobile, skills, daily_rate, is_available)
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?::text[], ?, ?)
             """;
 
         int totalCount = 0;
@@ -425,7 +431,7 @@ public class DataSeeder {
     // -------------------------------------------------------------------------
 
     private JsonNode readJson(String filename) throws Exception {
-        Path filePath = Paths.get(DATA_DIR, filename);
+        Path filePath = DATA_DIR.resolve(filename);
         if (!Files.exists(filePath)) {
             throw new FileNotFoundException("Data file not found: " + filePath.toAbsolutePath());
         }
