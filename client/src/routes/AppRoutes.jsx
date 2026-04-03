@@ -3,9 +3,9 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import Navbar from '../components/common/Navbar';
 
-const Home = lazy(() => import('../pages/Home'));
-const Login = lazy(() => import('../pages/Login'));
-const Register = lazy(() => import('../pages/Register'));
+const Home = lazy(() => import('../pages/public/Home'));
+const Login = lazy(() => import('../pages/public/Login'));
+const Register = lazy(() => import('../pages/public/Register'));
 const Services = lazy(() => import('../pages/Services'));
 const ServiceDetail = lazy(() => import('../pages/ServiceDetail'));
 const ThekedarProfile = lazy(() => import('../pages/ThekedarProfile'));
@@ -14,34 +14,38 @@ const BookingDetail = lazy(() => import('../pages/BookingDetail'));
 const CreateBooking = lazy(() => import('../pages/CreateBooking'));
 const ThekedarDashboard = lazy(() => import('../pages/ThekedarDashboard'));
 
-function Spinner() {
+function FullPageSpinner() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-dark">
-      <div className="w-8 h-8 border-4 border-saffron border-t-transparent rounded-full animate-spin" />
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="w-10 h-10 border-4 border-[#FF6B00] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 }
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
-  if (loading) return <Spinner />;
+  if (loading) return <FullPageSpinner />;
   if (!user) return <Navigate to="/login" replace />;
   return children;
 }
 
 function ConsumerRoute({ children }) {
   const { user, loading } = useAuth();
-  if (loading) return <Spinner />;
+  if (loading) return <FullPageSpinner />;
   if (!user) return <Navigate to="/login" replace />;
-  if (user.role !== 'consumer') return <Navigate to="/" replace />;
+  if (user.role !== 'consumer') {
+    return <Navigate to="/thekedar/dashboard" replace />;
+  }
   return children;
 }
 
 function ThekedarRoute({ children }) {
   const { user, loading } = useAuth();
-  if (loading) return <Spinner />;
+  if (loading) return <FullPageSpinner />;
   if (!user) return <Navigate to="/login" replace />;
-  if (user.role !== 'thekedar') return <Navigate to="/" replace />;
+  if (user.role !== 'thekedar') {
+    return <Navigate to="/" replace />;
+  }
   return children;
 }
 
@@ -49,7 +53,7 @@ export default function AppRoutes() {
   return (
     <>
       <Navbar />
-      <Suspense fallback={<Spinner />}>
+      <Suspense fallback={<FullPageSpinner />}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -68,7 +72,7 @@ export default function AppRoutes() {
             }
           />
           <Route
-            path="/bookings/new"
+            path="/book/:thekedarId"
             element={
               <ProtectedRoute>
                 <ConsumerRoute>

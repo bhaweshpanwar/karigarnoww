@@ -22,24 +22,38 @@ export function AuthProvider({ children }) {
       });
   }, []);
 
-  const login = async (email, password) => {
+  // Login from API call — used by Login page
+  const loginFromApi = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
     if (res.data.success) {
-      setUser(res.data.data);
+      // Fetch full user data
+      const meRes = await api.get('/auth/me');
+      setUser(meRes.data.data);
+      return meRes.data;
     }
     return res.data;
   };
 
+  // Set user directly — used after login page gets user from /auth/me
+  const login = (userData) => {
+    setUser(userData);
+  };
+
   const logout = async () => {
-    await api.post('/auth/logout');
-    setUser(null);
+    try {
+      await api.post('/auth/logout');
+    } catch {
+      // ignore errors
+    } finally {
+      setUser(null);
+    }
   };
 
   const isConsumer = () => user?.role === 'consumer';
   const isThekedar = () => user?.role === 'thekedar';
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, isConsumer, isThekedar }}>
+    <AuthContext.Provider value={{ user, loading, login, loginFromApi, logout, isConsumer, isThekedar }}>
       {children}
     </AuthContext.Provider>
   );

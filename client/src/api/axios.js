@@ -5,14 +5,10 @@ const api = axios.create({
   withCredentials: true,
 });
 
+// Remove the 401 redirect — let React Router route guards handle it
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 export default api;
