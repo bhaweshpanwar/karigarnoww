@@ -23,4 +23,7 @@ public class UserResponse {
 
     @JsonProperty("role")
     private String role;
+
+    @JsonProperty("photo")
+    private String photo;
 }

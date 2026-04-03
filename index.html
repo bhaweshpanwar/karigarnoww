@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KarigarNow — Book Labour. Fast.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────
+   TOKENS
+───────────────────────────────────────── */
+:root {
+  --ink:      #0E0D0C;
+  --ink2:     #2C2A28;
+  --mid:      #6B6560;
+  --muted:    #A89E97;
+  --rule:     #DDD8D2;
+  --rule2:    #EDE9E4;
+  --bg:       #FDFCFA;
+  --bg2:      #F5F1EC;
+  --bg3:      #EDE9E4;
+  --white:    #FFFFFF;
+  --accent:   #D44B0A;
+  --accent2:  #FF6B2B;
+  --ap:       #FDF0E8;
+  --ap2:      #FAE0CC;
+  --black:    #0E0D0C;
+  --green:    #1A6E42;
+  --gbg:      #E8F5EE;
+  --red:      #B93424;
+  --rbg:      #FDECEA;
+  --gold:     #92600A;
+  --goldbg:   #FEF3C7;
+  --blue:     #1A4ED8;
+  --bluebg:   #EFF6FF;
+  --r:        8px;
+  --r2:       14px;
+  --r3:       20px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* display font */
+.f-disp { font-family: 'Fraunces', serif; }
+
+.page { display: none; }
+.page.active { display: block; animation: arrive .32s cubic-bezier(.16,1,.3,1); }
+@keyframes arrive {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 2px; }
+
+/* ─────────────────────────────────────────
+   NAV  — minimal, ruled, editorial
+───────────────────────────────────────── */
+nav {
+  position: sticky; top: 0; z-index: 300;
+  display: flex; align-items: center;
+  padding: 0 48px; height: 56px;
+  background: var(--white);
+  border-bottom: 2px solid var(--ink);
+  gap: 0;
+}
+.nav-brand {
+  font-family: 'Fraunces', serif;
+  font-size: 19px; font-weight: 900;
+  letter-spacing: -0.5px; color: var(--ink);
+  cursor: pointer; margin-right: 40px;
+  white-space: nowrap; flex-shrink: 0;
+}
+.nav-brand span { color: var(--accent); }
+.nav-links {
+  display: flex; align-items: center;
+  gap: 0; flex: 1;
+  border-left: 1.5px solid var(--rule);
+}
+.nav-link {
+  padding: 0 18px; height: 56px;
+  display: flex; align-items: center;
+  font-size: 13px; font-weight: 600;
+  color: var(--muted); cursor: pointer;
+  border: none; background: none;
+  font-family: 'Instrument Sans', sans-serif;
+  border-right: 1.5px solid var(--rule);
+  transition: color .15s, background .15s;
+  white-space: nowrap;
+}
+.nav-link:hover { color: var(--ink); background: var(--bg2); }
+.nav-link.cur { color: var(--ink); font-weight: 700; background: var(--bg2); }
+.nav-actions {
+  display: flex; align-items: center; gap: 10px;
+  border-left: 1.5px solid var(--rule);
+  padding-left: 20px; margin-left: auto; flex-shrink: 0;
+}
+.btn-ghost {
+  padding: 7px 16px; border-radius: var(--r);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  border: 1.5px solid var(--rule); background: var(--white);
+  color: var(--ink); font-family: 'Instrument Sans', sans-serif;
+  transition: all .18s;
+}
+.btn-ghost:hover { border-color: var(--ink); }
+.btn-solid {
+  padding: 7px 16px; border-radius: var(--r);
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  border: none; background: var(--ink); color: var(--white);
+  font-family: 'Instrument Sans', sans-serif; transition: all .18s;
+}
+.btn-solid:hover { background: var(--accent); }
+.nav-user-chip {
+  display: flex; align-items: center; gap: 10px;
+}
+.user-monogram {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--ink); color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; flex-shrink: 0;
+}
+.user-monogram.acc { background: var(--accent); }
+.user-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+.btn-lo {
+  padding: 6px 12px; font-size: 12.5px; font-weight: 600; cursor: pointer;
+  border: none; background: none; color: var(--muted);
+  font-family: 'Instrument Sans', sans-serif; transition: color .15s;
+}
+.btn-lo:hover { color: var(--red); }
+.btn-sm-dash {
+  padding: 7px 14px; border-radius: var(--r);
+  font-size: 12.5px; font-weight: 600; cursor: pointer;
+  border: 1.5px solid var(--rule); background: var(--white);
+  color: var(--mid); font-family: 'Instrument Sans', sans-serif; transition: all .15s;
+}
+.btn-sm-dash:hover { border-color: var(--ink); color: var(--ink); }
+
+/* ─────────────────────────────────────────
+   LANDING  — asymmetric editorial hero
+───────────────────────────────────────── */
+.hero-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1px 380px;
+  min-height: calc(100vh - 56px - 4px);
+  border-bottom: 2px solid var(--ink);
+}
+.hero-left {
+  padding: 72px 60px 64px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  border-right: none;
+}
+.hero-divider { background: var(--ink); }
+.hero-right {
+  padding: 40px 36px;
+  display: flex; flex-direction: column; gap: 0;
+  border-left: 2px solid var(--ink);
+}
+.hero-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 28px;
+}
+.hero-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(52px, 7vw, 96px);
+  font-weight: 900; line-height: .97;
+  letter-spacing: -3px; color: var(--ink);
+  margin-bottom: 0;
+}
+.hero-title .ital { font-style: italic; color: var(--accent); }
+.hero-tagline-wrap {
+  display: flex; align-items: flex-end; gap: 32px;
+  margin-top: 40px;
+}
+.hero-tagline {
+  font-family: 'Fraunces', serif; font-style: italic;
+  font-size: 18px; color: var(--mid); line-height: 1.5;
+  max-width: 380px; flex: 1;
+}
+.hero-ctas { display: flex; gap: 10px; flex-shrink: 0; }
+.btn-big {
+  padding: 13px 26px; border-radius: var(--r);
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  border: none; background: var(--ink); color: var(--white);
+  font-family: 'Instrument Sans', sans-serif; transition: all .2s;
+  white-space: nowrap;
+}
+.btn-big:hover { background: var(--accent); transform: translateY(-2px); }
+.btn-big.out {
+  background: var(--white); color: var(--ink);
+  border: 2px solid var(--ink);
+}
+.btn-big.out:hover { background: var(--bg2); transform: translateY(-2px); }
+
+/* right panel — stats stacked */
+.hero-stat-block {
+  border-bottom: 1.5px solid var(--rule2);
+  padding: 22px 0;
+}
+.hero-stat-block:last-child { border-bottom: none; }
+.hs-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.hs-val { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 900; letter-spacing: -1.5px; color: var(--ink); }
+.hs-val.or { color: var(--accent); }
+.hs-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* ─────────────────────────────────────────
+   BOTTOM BAR / STRIP
+───────────────────────────────────────── */
+.ticker-strip {
+  background: var(--ink); color: var(--white);
+  display: flex; overflow: hidden;
+  border-bottom: 2px solid var(--ink);
+}
+.ticker-inner {
+  display: flex;
+}
+.tick-item {
+  padding: 14px 40px; white-space: nowrap;
+  font-size: 12px; font-weight: 600; letter-spacing: .5px;
+  border-right: 1px solid rgba(255,255,255,.1);
+  flex-shrink: 0;
+}
+.tick-item span { color: var(--accent2); margin-right: 10px; font-family: 'Fraunces', serif; font-weight: 700; }
+
+/* ─────────────────────────────────────────
+   SERVICES SECTION — asymmetric table grid
+───────────────────────────────────────── */
+.svc-section {
+  display: grid; grid-template-columns: 260px 1fr;
+  border-bottom: 2px solid var(--ink);
+}
+.svc-intro {
+  padding: 56px 40px 56px 56px;
+  border-right: 2px solid var(--ink);
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.svc-intro-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 16px;
+}
+.svc-intro-title {
+  font-family: 'Fraunces', serif; font-size: 38px; font-weight: 900;
+  letter-spacing: -1.5px; line-height: 1.05; color: var(--ink);
+  margin-bottom: 16px;
+}
+.svc-intro-p { font-size: 13.5px; color: var(--mid); line-height: 1.65; }
+.svc-intro-cta { margin-top: 32px; }
+.svc-grid-area {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+}
+.svc-cell {
+  padding: 32px 28px;
+  border-right: 1.5px solid var(--rule);
+  border-bottom: 1.5px solid var(--rule);
+  cursor: pointer; transition: background .18s;
+  position: relative;
+}
+.svc-cell:nth-child(3n) { border-right: none; }
+.svc-cell:nth-child(n+4) { border-bottom: none; }
+.svc-cell:hover { background: var(--ap); }
+.sc-num {
+  font-family: 'Fraunces', serif; font-size: 11px; font-weight: 700;
+  color: var(--muted); letter-spacing: 1px; margin-bottom: 12px;
+}
+.sc-name { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; letter-spacing: -.5px; color: var(--ink); margin-bottom: 6px; }
+.sc-price { font-size: 12.5px; color: var(--mid); margin-bottom: 12px; }
+.sc-tag {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 4px;
+  background: var(--bg3); color: var(--muted);
+}
+.svc-cell:hover .sc-tag { background: var(--ap2); color: var(--accent); }
+
+/* ─────────────────────────────────────────
+   HOW IT WORKS — horizontal ruled band
+───────────────────────────────────────── */
+.how-section {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  border-bottom: 2px solid var(--ink);
+}
+.how-cell {
+  padding: 48px 36px;
+  border-right: 1.5px solid var(--rule);
+}
+.how-cell:last-child { border-right: none; }
+.how-num {
+  font-family: 'Fraunces', serif; font-size: 56px; font-weight: 900;
+  color: var(--rule); line-height: 1; margin-bottom: 20px;
+  letter-spacing: -2px;
+}
+.how-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; margin-bottom: 10px; letter-spacing: -.3px; }
+.how-desc { font-size: 13px; color: var(--mid); line-height: 1.65; }
+
+/* FOOTER */
+footer {
+  background: var(--ink); padding: 40px 56px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 20px;
+}
+.f-brand { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 900; color: var(--white); }
+.f-brand span { color: var(--accent2); }
+.f-links { display: flex; gap: 24px; }
+.f-link { font-size: 12.5px; color: rgba(255,255,255,.4); cursor: pointer; transition: color .15s; }
+.f-link:hover { color: rgba(255,255,255,.85); }
+.f-copy { font-size: 12px; color: rgba(255,255,255,.25); }
+
+/* ─────────────────────────────────────────
+   AUTH  — split-panel with big type left
+───────────────────────────────────────── */
+.auth-shell {
+  display: grid; grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 56px);
+}
+.auth-panel-left {
+  background: var(--ink);
+  padding: 64px 56px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  position: relative; overflow: hidden;
+}
+.auth-left-top {}
+.auth-left-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: rgba(255,255,255,.35);
+  margin-bottom: 40px; display: block;
+}
+.auth-left-headline {
+  font-family: 'Fraunces', serif; font-size: clamp(40px, 5vw, 68px);
+  font-weight: 900; line-height: .97; letter-spacing: -3px;
+  color: var(--white);
+}
+.auth-left-headline em { font-style: italic; color: var(--accent2); }
+.auth-left-sub {
+  font-family: 'Fraunces', serif; font-style: italic;
+  font-size: 16px; color: rgba(255,255,255,.45); margin-top: 28px;
+  line-height: 1.55; max-width: 320px;
+}
+.auth-left-bottom {}
+.auth-proof-row { display: flex; flex-direction: column; gap: 16px; margin-top: 48px; }
+.auth-proof-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px 18px; border-radius: var(--r);
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+}
+.ap-num { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 900; color: var(--accent2); line-height: 1; flex-shrink: 0; }
+.ap-txt { font-size: 13px; color: rgba(255,255,255,.55); line-height: 1.5; }
+.ap-txt strong { color: rgba(255,255,255,.8); font-weight: 700; }
+
+/* Decorative large number bg */
+.auth-bg-num {
+  position: absolute; bottom: -20px; right: -10px;
+  font-family: 'Fraunces', serif; font-size: 240px; font-weight: 900;
+  color: rgba(255,255,255,.03); line-height: 1; pointer-events: none;
+  letter-spacing: -8px; user-select: none;
+}
+
+.auth-panel-right {
+  background: var(--bg);
+  padding: 56px 64px;
+  display: flex; align-items: flex-start; justify-content: center;
+  overflow-y: auto;
+}
+.auth-form-wrap { width: 100%; max-width: 400px; padding-top: 16px; }
+
+/* role toggle strip */
+.role-strip {
+  display: flex; border: 2px solid var(--ink); border-radius: var(--r);
+  overflow: hidden; margin-bottom: 36px;
+}
+.role-strip-btn {
+  flex: 1; padding: 11px 10px; text-align: center;
+  font-size: 13.5px; font-weight: 700; cursor: pointer;
+  border: none; background: none;
+  font-family: 'Instrument Sans', sans-serif; transition: all .18s;
+  color: var(--muted);
+}
+.role-strip-btn:first-child { border-right: 2px solid var(--ink); }
+.role-strip-btn.on { background: var(--ink); color: var(--white); }
+
+.auth-form-title {
+  font-family: 'Fraunces', serif; font-size: 32px; font-weight: 900;
+  letter-spacing: -1px; margin-bottom: 6px;
+}
+.auth-form-sub { color: var(--mid); font-size: 14px; margin-bottom: 32px; line-height: 1.5; }
+
+/* tab switch */
+.auth-mode-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--rule); margin-bottom: 32px; }
+.auth-mode-tab {
+  padding: 10px 0; margin-right: 28px;
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  border: none; background: none; color: var(--muted);
+  font-family: 'Instrument Sans', sans-serif;
+  border-bottom: 2px solid transparent; margin-bottom: -2px;
+  transition: all .18s;
+}
+.auth-mode-tab.on { color: var(--ink); border-bottom-color: var(--ink); }
+
+.aform { display: flex; flex-direction: column; gap: 18px; }
+.fname-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.afield { display: flex; flex-direction: column; gap: 7px; }
+.aflbl {
+  font-size: 11px; font-weight: 700; color: var(--muted);
+  letter-spacing: .8px; text-transform: uppercase;
+}
+.ainput, .asel, .atxt {
+  padding: 12px 14px; border-radius: var(--r);
+  border: 2px solid var(--rule); background: var(--white);
+  color: var(--ink); font-size: 14px; font-family: 'Instrument Sans', sans-serif;
+  transition: border-color .18s; outline: none;
+}
+.ainput:focus, .asel:focus, .atxt:focus { border-color: var(--ink); }
+.asel { appearance: none; cursor: pointer; }
+
+/* role cards inside register */
+.register-roles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.reg-role {
+  border: 2px solid var(--rule); border-radius: var(--r);
+  padding: 16px; cursor: pointer; transition: all .18s;
+}
+.reg-role:hover { border-color: var(--rule2); background: var(--bg2); }
+.reg-role.on { border-color: var(--ink); background: var(--bg2); }
+.rr-title { font-family: 'Fraunces', serif; font-weight: 700; font-size: 16px; margin-bottom: 4px; letter-spacing: -.3px; }
+.rr-desc { font-size: 12px; color: var(--mid); line-height: 1.5; }
+.reg-role.on .rr-title { color: var(--accent); }
+
+.btn-auth-submit {
+  padding: 14px; border-radius: var(--r);
+  background: var(--ink); color: var(--white); border: none;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  font-family: 'Instrument Sans', sans-serif; transition: all .2s;
+}
+.btn-auth-submit:hover { background: var(--accent); transform: translateY(-1px); }
+
+.or-divider { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 12px; }
+.or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1.5px; background: var(--rule); }
+
+.auth-switch-line { text-align: center; font-size: 13px; color: var(--mid); }
+.auth-switch-line a { color: var(--accent); font-weight: 700; cursor: pointer; }
+
+/* ─────────────────────────────────────────
+   SERVICES BROWSE PAGE
+───────────────────────────────────────── */
+.svp-wrap { max-width: 1280px; margin: 0 auto; padding: 56px 48px; }
+.svp-head {
+  display: grid; grid-template-columns: 1fr auto;
+  align-items: flex-end; margin-bottom: 40px;
+  padding-bottom: 28px; border-bottom: 2px solid var(--ink);
+}
+.svp-title { font-family: 'Fraunces', serif; font-size: clamp(34px,5vw,60px); font-weight: 900; letter-spacing: -2px; line-height: 1; }
+.svp-title span { font-style: italic; color: var(--accent); }
+.svp-sub { color: var(--mid); font-size: 14px; margin-top: 6px; }
+
+.svp-search-row {
+  display: flex; gap: 10px; margin-bottom: 36px;
+}
+.svp-sinput {
+  flex: 1; padding: 12px 16px; border-radius: var(--r);
+  border: 2px solid var(--rule); background: var(--white);
+  color: var(--ink); font-size: 14px; font-family: 'Instrument Sans', sans-serif;
+  outline: none; transition: border-color .18s;
+}
+.svp-sinput:focus { border-color: var(--ink); }
+.svp-sbtn {
+  padding: 12px 22px; border-radius: var(--r);
+  background: var(--ink); color: var(--white); border: none;
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  font-family: 'Instrument Sans', sans-serif; transition: background .18s;
+}
+.svp-sbtn:hover { background: var(--accent); }
+
+.svp-layout { display: grid; grid-template-columns: 200px 1fr; gap: 32px; }
+
+/* sidebar */
+.svp-sidebar {
+  position: sticky; top: 72px;
+  border: 2px solid var(--ink); border-radius: var(--r2); overflow: hidden;
+}
+.svp-sb-hdr {
+  padding: 12px 16px; background: var(--ink);
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: rgba(255,255,255,.5);
+}
+.svp-sb-item {
+  padding: 13px 16px; cursor: pointer; transition: background .15s;
+  font-size: 14px; font-weight: 600; color: var(--mid);
+  border-bottom: 1.5px solid var(--rule2);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.svp-sb-item:last-child { border-bottom: none; }
+.svp-sb-item:hover { background: var(--bg2); color: var(--ink); }
+.svp-sb-item.on { background: var(--ap); color: var(--accent); font-weight: 700; }
+.svp-sb-ct {
+  font-size: 10.5px; background: var(--bg3); color: var(--muted);
+  padding: 2px 7px; border-radius: 100px; font-weight: 700;
+}
+.svp-sb-item.on .svp-sb-ct { background: var(--ap2); color: var(--accent); }
+
+/* thekedar cards */
+.svp-con-hd {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding-bottom: 18px; margin-bottom: 20px;
+  border-bottom: 1.5px solid var(--rule);
+}
+.svp-con-title { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 900; letter-spacing: -.8px; }
+.svp-con-meta { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+.sort-row { display: flex; gap: 6px; flex-shrink: 0; margin-top: 4px; }
+.sort-pill {
+  padding: 6px 13px; border-radius: 100px;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  border: 1.5px solid var(--rule); background: var(--white);
+  color: var(--mid); font-family: 'Instrument Sans', sans-serif; transition: all .15s;
+}
+.sort-pill.on { background: var(--ink); color: var(--white); border-color: var(--ink); }
+.sort-pill:hover:not(.on) { border-color: var(--ink); color: var(--ink); }
+
+.tk-list { display: flex; flex-direction: column; gap: 2px; }
+.tk-row {
+  background: var(--white); border: 2px solid var(--rule);
+  border-radius: var(--r2); padding: 22px 24px;
+  display: grid; grid-template-columns: auto 1fr auto;
+  gap: 18px; align-items: center;
+  transition: border-color .18s, box-shadow .18s;
+}
+.tk-row:hover { border-color: var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+.tk-mono {
+  width: 50px; height: 50px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-size: 16px; font-weight: 900; color: var(--white);
+  flex-shrink: 0;
+}
+.tk-info {}
+.tk-name-row { font-family: 'Fraunces', serif; font-weight: 700; font-size: 18px; letter-spacing: -.3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 5px; }
+.tk-meta-row { font-size: 12.5px; color: var(--mid); display: flex; flex-wrap: wrap; gap: 14px; }
+.tk-right-col { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0; }
+.tk-rate-disp { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 900; letter-spacing: -.5px; }
+.tk-rate-disp small { font-family: 'Instrument Sans', sans-serif; font-size: 12px; font-weight: 400; color: var(--muted); }
+.btn-bk {
+  padding: 9px 20px; border-radius: var(--r);
+  background: var(--ink); color: var(--white); border: none;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  font-family: 'Instrument Sans', sans-serif; transition: all .18s; white-space: nowrap;
+}
+.btn-bk:hover { background: var(--accent); transform: translateY(-1px); }
+
+/* badge */
+.badge {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+}
+.b-gold { background: var(--goldbg); color: var(--gold); }
+.b-sil  { background: var(--bg3); color: var(--mid); }
+.b-new  { background: var(--gbg); color: var(--green); }
+.b-or   { background: var(--ap); color: var(--accent); }
+.b-bl   { background: var(--bluebg); color: var(--blue); }
+
+/* ─────────────────────────────────────────
+   DASHBOARD LAYOUT
+───────────────────────────────────────── */
+.dash-shell { display: grid; grid-template-columns: 200px 1fr; min-height: calc(100vh - 56px); }
+.dash-side {
+  background: var(--white); border-right: 2px solid var(--rule);
+  position: sticky; top: 56px; height: calc(100vh - 56px);
+  overflow-y: auto; padding: 24px 0;
+}
+.ds-section { padding: 0 16px; font-size: 9.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; margin-top: 20px; }
+.ds-section:first-child { margin-top: 0; }
+.ds-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; cursor: pointer; transition: all .15s;
+  font-size: 13.5px; font-weight: 600; color: var(--mid);
+  border-left: 3px solid transparent;
+}
+.ds-item:hover { background: var(--bg2); color: var(--ink); }
+.ds-item.on { background: var(--ap); color: var(--accent); font-weight: 700; border-left-color: var(--accent); }
+.ds-bdg { font-size: 10px; background: var(--accent); color: var(--white); padding: 1px 6px; border-radius: 100px; font-weight: 700; }
+.dash-main { background: var(--bg2); padding: 36px 40px; }
+.dash-pg-hd { margin-bottom: 28px; }
+.dash-pg-title { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 900; letter-spacing: -1px; }
+.dash-pg-sub { color: var(--mid); font-size: 13.5px; margin-top: 3px; }
+.dash-tb-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
+.dash-right-bits { display: flex; align-items: center; gap: 12px; }
+.city-chip {
+  padding: 7px 13px; background: var(--white); border: 1.5px solid var(--rule);
+  border-radius: var(--r); font-size: 12.5px; color: var(--mid); font-weight: 600;
+}
+.city-chip strong { color: var(--ink); }
+.notif-btn {
+  width: 36px; height: 36px; border-radius: var(--r);
+  background: var(--white); border: 1.5px solid var(--rule);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; transition: border-color .15s;
+  color: var(--mid); position: relative; font-family: 'Instrument Sans', sans-serif;
+}
+.notif-btn:hover { border-color: var(--ink); }
+.notif-dot { position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; border: 1.5px solid var(--white); }
+
+/* stat cards */
+.sc-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; margin-bottom: 24px; }
+.sc {
+  background: var(--white); border: 1.5px solid var(--rule);
+  border-radius: var(--r2); padding: 18px 20px; transition: border-color .15s;
+}
+.sc:hover { border-color: var(--ink); }
+.sc-lbl { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+.sc-val { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 900; letter-spacing: -1px; }
+.sc-val.or { color: var(--accent); }
+.sc-val.gr { color: var(--green); }
+.sc-val.yl { color: #B8860B; }
+
+/* card */
+.card { background: var(--white); border: 1.5px solid var(--rule); border-radius: var(--r2); overflow: hidden; }
+.card-hd { padding: 16px 22px; border-bottom: 1.5px solid var(--rule); display: flex; justify-content: space-between; align-items: center; }
+.card-hd-t { font-family: 'Fraunces', serif; font-weight: 700; font-size: 17px; letter-spacing: -.3px; }
+.card-bd { padding: 22px; }
+
+/* booking form */
+.bfg { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.bfg-full { grid-column: 1/-1; }
+.stepper { display: flex; align-items: center; gap: 10px; border: 2px solid var(--rule); border-radius: var(--r); padding: 6px 12px; background: var(--bg); width: fit-content; }
+.stp-btn { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--rule); background: var(--white); color: var(--ink); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; line-height: 1; transition: all .12s; font-family: 'Instrument Sans', sans-serif; }
+.stp-btn:hover { border-color: var(--accent); color: var(--accent); }
+.stp-val { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 900; min-width: 20px; text-align: center; }
+
+/* result cards */
+.res-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.res-row {
+  background: var(--white); border: 1.5px solid var(--rule);
+  border-radius: var(--r2); padding: 16px 20px;
+  display: flex; align-items: center; gap: 16px; transition: border-color .15s;
+}
+.res-row:hover { border-color: var(--ink); }
+.res-mono { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 14px; font-weight: 900; color: var(--white); flex-shrink: 0; }
+.res-info { flex: 1; min-width: 0; }
+.res-n { font-family: 'Fraunces', serif; font-weight: 700; font-size: 16px; letter-spacing: -.3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 3px; }
+.res-m { font-size: 12px; color: var(--mid); display: flex; gap: 12px; flex-wrap: wrap; }
+.res-r { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+.res-rate { font-family: 'Fraunces', serif; font-weight: 900; font-size: 17px; letter-spacing: -.3px; }
+.res-rate small { font-family: 'Instrument Sans', sans-serif; font-size: 11px; font-weight: 400; color: var(--muted); }
+
+/* booking status */
+.bk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.bk-c { background: var(--white); border: 1.5px solid var(--rule); border-radius: var(--r2); padding: 22px; }
+.bk-c.live { border-color: rgba(212,75,10,.3); background: #FFFAF8; }
+.bk-c.done { border-color: rgba(26,110,66,.22); background: #F8FDFB; }
+.st-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10.5px; font-weight: 700; padding: 4px 11px; border-radius: 100px;
+  text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px;
+}
+.st-live { background: var(--ap); color: var(--accent); }
+.st-done { background: var(--gbg); color: var(--green); }
+.st-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.st-live .st-dot { animation: blink 1.4s infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:.2} }
+.bk-svc { font-family: 'Fraunces', serif; font-weight: 900; font-size: 24px; letter-spacing: -.5px; margin-bottom: 4px; }
+.bk-det { color: var(--mid); font-size: 12.5px; margin-bottom: 8px; line-height: 1.5; }
+.otp-box { background: var(--bg2); border: 1.5px solid var(--rule); border-radius: var(--r); padding: 13px 16px; display: flex; justify-content: space-between; align-items: center; }
+.otp-lbl { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+.otp-hint { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.otp-num { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 900; color: var(--accent); letter-spacing: 8px; }
+
+.stars-row { display: flex; gap: 4px; margin-top: 10px; }
+.star { font-size: 22px; cursor: pointer; color: var(--rule); transition: color .1s, transform .1s; background: none; border: none; padding: 1px; }
+.star.lit, .star:hover { color: #F59E0B; transform: scale(1.12); }
+.btn-rate-it {
+  margin-top: 10px; width: 100%;
+  border: 1.5px solid var(--rule); background: var(--white);
+  color: var(--mid); border-radius: var(--r);
+  padding: 9px; font-family: 'Instrument Sans', sans-serif; font-size: 13px;
+  font-weight: 600; cursor: pointer; transition: all .15s;
+}
+.btn-rate-it:hover { border-color: #F59E0B; color: #92400E; background: #FEF9E7; }
+
+/* history table */
+.ht { width: 100%; border-collapse: collapse; }
+.ht th { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); padding: 12px 16px; text-align: left; border-bottom: 1.5px solid var(--rule); }
+.ht td { padding: 13px 16px; font-size: 13.5px; border-bottom: 1.5px solid var(--rule2); color: var(--ink2); }
+.ht tr:last-child td { border-bottom: none; }
+.ht tr:hover td { background: var(--bg2); }
+.pill { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 10.5px; font-weight: 700; }
+.p-done { background: var(--gbg); color: var(--green); }
+.p-prog { background: #FEF9E7; color: #B8860B; }
+
+/* THEKEDAR DASH */
+.online-tg { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.tg-tr { width: 44px; height: 24px; border-radius: 100px; background: var(--rule); position: relative; transition: background .3s; }
+.tg-tr.on { background: var(--green); }
+.tg-th { width: 18px; height: 18px; border-radius: 50%; background: var(--white); position: absolute; top: 3px; left: 3px; transition: left .3s; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+.tg-tr.on .tg-th { left: 23px; }
+.tg-lbl { font-size: 13.5px; font-weight: 700; }
+.tg-lbl.on { color: var(--green); }
+.tg-lbl.off { color: var(--muted); }
+
+/* job request */
+.jr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.jr-c { background: var(--white); border: 1.5px solid var(--rule); border-radius: var(--r2); padding: 22px; transition: border-color .18s; }
+.jr-c.acc { border-color: rgba(26,110,66,.3); background: #F8FDFB; }
+.jr-c.dec { opacity: .5; }
+.jr-hd { display: flex; justify-content: space-between; margin-bottom: 16px; }
+.jr-cn { font-family: 'Fraunces', serif; font-weight: 700; font-size: 20px; letter-spacing: -.4px; }
+.jr-ca { font-size: 12.5px; color: var(--mid); margin-top: 2px; }
+.jr-dg { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+.jr-d {}
+.jr-dl { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.jr-dv { font-size: 14px; font-weight: 700; margin-top: 2px; }
+.jr-dv.or { color: var(--accent); }
+.jr-btns { display: flex; gap: 10px; }
+.btn-acc { flex: 1; background: var(--green); color: var(--white); border: none; padding: 10px; border-radius: var(--r); font-family: 'Instrument Sans', sans-serif; font-size: 13.5px; font-weight: 700; cursor: pointer; transition: opacity .15s; }
+.btn-acc:hover { opacity: .85; }
+.btn-dec { flex: 1; background: var(--white); color: var(--red); border: 1.5px solid rgba(185,52,36,.22); padding: 10px; border-radius: var(--r); font-family: 'Instrument Sans', sans-serif; font-size: 13.5px; font-weight: 700; cursor: pointer; transition: background .15s; }
+.btn-dec:hover { background: var(--rbg); }
+.res-banner { padding: 11px 14px; border-radius: var(--r); font-size: 13.5px; font-weight: 600; }
+.rb-acc { background: var(--gbg); color: var(--green); }
+.rb-dec { background: var(--rbg); color: var(--red); }
+
+/* active jobs */
+.aj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.aj-c { background: var(--white); border: 1.5px solid var(--rule); border-radius: var(--r2); padding: 22px; }
+.aj-hd { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.aj-n { font-family: 'Fraunces', serif; font-weight: 700; font-size: 20px; letter-spacing: -.4px; }
+.aj-d { color: var(--mid); font-size: 12.5px; margin-top: 2px; }
+.aj-w { font-size: 13px; color: var(--mid); margin-bottom: 12px; }
+.aj-w strong { color: var(--ink); }
+.otp-sm-l { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 4px; }
+.otp-xl { font-family: 'Fraunces', serif; font-size: 48px; font-weight: 900; color: var(--accent); letter-spacing: 12px; line-height: 1; }
+.otp-cap { font-size: 11.5px; color: var(--muted); margin-top: 6px; }
+
+/* team table */
+.tt { width: 100%; border-collapse: collapse; }
+.tt th { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); padding: 12px 16px; text-align: left; border-bottom: 1.5px solid var(--rule); }
+.tt td { padding: 12px 16px; font-size: 13.5px; border-bottom: 1.5px solid var(--rule2); vertical-align: middle; }
+.tt tr:last-child td { border-bottom: none; }
+.tt tr:hover td { background: var(--bg2); }
+.skill-ch { display: inline-block; background: var(--bg2); border: 1px solid var(--rule); color: var(--mid); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin: 2px; }
+.av-tg { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.av-tr { width: 36px; height: 20px; border-radius: 100px; background: var(--rule); position: relative; transition: background .3s; }
+.av-tr.on { background: var(--green); }
+.av-th { width: 14px; height: 14px; border-radius: 50%; background: var(--white); position: absolute; top: 3px; left: 3px; transition: left .3s; }
+.av-tr.on .av-th { left: 19px; }
+.av-lb { font-size: 12px; font-weight: 700; }
+.av-lb.on { color: var(--green); }
+.av-lb.off { color: var(--muted); }
+
+/* earnings chart */
+.echart { display: flex; align-items: flex-end; gap: 10px; height: 140px; }
+.ec-col { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; height: 100%; justify-content: flex-end; }
+.ec-bw { display: flex; align-items: flex-end; height: 112px; width: 100%; }
+.ec-b { width: 100%; border-radius: 5px 5px 0 0; background: var(--ink); position: relative; cursor: pointer; transition: background .18s; min-height: 4px; }
+.ec-b:hover { background: var(--accent); }
+.ec-bv { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 9.5px; font-weight: 700; color: var(--mid); white-space: nowrap; }
+.ec-b:hover .ec-bv { color: var(--accent); }
+.ec-day { font-size: 10.5px; color: var(--muted); font-weight: 700; letter-spacing: .3px; }
+
+/* ─────────────────────────────────────────
+   MODAL
+───────────────────────────────────────── */
+.modal-ov {
+  position: fixed; inset: 0; background: rgba(14,13,12,.5);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; opacity: 0; pointer-events: none; transition: opacity .25s;
+}
+.modal-ov.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--white); border: 2px solid var(--ink);
+  border-radius: var(--r3); padding: 40px; width: 480px; max-width: 95vw;
+  transform: scale(.97) translateY(8px); transition: transform .28s cubic-bezier(.16,1,.3,1);
+  max-height: 90vh; overflow-y: auto; position: relative;
+  box-shadow: 6px 6px 0 var(--ink);
+}
+.modal-ov.open .modal { transform: scale(1) translateY(0); }
+.modal-x {
+  position: absolute; top: 16px; right: 16px;
+  width: 30px; height: 30px; border-radius: var(--r);
+  background: var(--bg2); border: 1.5px solid var(--rule);
+  color: var(--mid); cursor: pointer; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s; font-family: 'Instrument Sans', sans-serif;
+}
+.modal-x:hover { background: var(--ink); color: var(--white); }
+.modal-t { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 900; letter-spacing: -1px; margin-bottom: 22px; }
+.m-row { display: flex; justify-content: space-between; padding: 11px 0; border-bottom: 1.5px solid var(--rule2); font-size: 14px; }
+.m-row:last-of-type { border-bottom: none; }
+.m-lbl { color: var(--mid); }
+.m-val { font-weight: 700; }
+.m-val.big { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 900; letter-spacing: -.5px; color: var(--accent); }
+.notice { border-radius: var(--r); padding: 13px 14px; font-size: 13px; line-height: 1.55; margin: 14px 0; }
+.n-escrow { background: var(--bluebg); color: #1E40AF; border: 1px solid #BFDBFE; }
+.n-otp { background: #FEF9E7; color: #78350F; border: 1px solid #FDE68A; }
+.btn-confirm {
+  width: 100%; background: var(--ink); color: var(--white); border: none;
+  padding: 14px; border-radius: var(--r); font-family: 'Instrument Sans', sans-serif;
+  font-size: 15px; font-weight: 700; cursor: pointer; transition: all .2s; margin-top: 6px;
+}
+.btn-confirm:hover { background: var(--accent); transform: translateY(-1px); }
+
+/* TOAST */
+.tw { position: fixed; bottom: 24px; right: 24px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
+.toast {
+  background: var(--white); border: 2px solid var(--ink);
+  border-radius: var(--r2); padding: 12px 16px;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 3px 3px 0 var(--ink);
+  animation: tIn .26s cubic-bezier(.16,1,.3,1); max-width: 280px;
+}
+.toast.ok { border-left: 4px solid var(--green); }
+.toast.err { border-left: 4px solid var(--red); }
+.toast-msg { font-size: 13px; font-weight: 600; color: var(--ink); }
+@keyframes tIn { from { opacity:0; transform:translateX(30px) scale(.95); } to { opacity:1; transform:translateX(0) scale(1); } }
+
+/* utilities */
+.hidden { display: none !important; }
+hr.div { border: none; border-top: 1.5px solid var(--rule); margin: 28px 0; }
+.mb16 { margin-bottom: 16px; }
+.mb24 { margin-bottom: 24px; }
+
+/* ─────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────── */
+@media(max-width:1100px) {
+  .hero-wrap { grid-template-columns: 1fr; min-height: auto; }
+  .hero-divider, .hero-right { display: none; }
+  .hero-left { padding: 56px 36px 48px; }
+  .svc-section { grid-template-columns: 1fr; }
+  .svc-intro { border-right: none; border-bottom: 2px solid var(--ink); padding: 40px 36px; }
+  .auth-shell { grid-template-columns: 1fr; }
+  .auth-panel-left { display: none; }
+  .auth-panel-right { padding: 48px 32px; }
+}
+@media(max-width:900px) {
+  .how-section { grid-template-columns: 1fr 1fr; }
+  .how-cell:nth-child(2n) { border-right: none; }
+  .how-cell:nth-child(n+3) { border-top: 1.5px solid var(--rule); }
+  .svp-layout { grid-template-columns: 1fr; }
+  .svp-sidebar { position: static; }
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .dash-shell { grid-template-columns: 1fr; }
+  .dash-side { display: none; }
+  .sc-row { grid-template-columns: repeat(3,1fr); }
+}
+@media(max-width:640px) {
+  .how-section { grid-template-columns: 1fr; }
+  .bfg, .bk-grid, .jr-grid, .aj-grid { grid-template-columns: 1fr; }
+  .bfg-full { grid-column: 1; }
+  .svc-grid-area { grid-template-columns: 1fr 1fr; }
+  .sc-row { grid-template-columns: 1fr 1fr; }
+  .svp-wrap { padding: 32px 20px; }
+  .svcs-page-inner { padding: 36px 20px; }
+  nav { height: 52px; }
+  .nav-brand { font-size: 17px; margin-right: 20px; }
+  footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+  .f-links { justify-content: center; }
+  .tk-row { grid-template-columns: auto 1fr; }
+  .tk-right-col { grid-column: 1/-1; flex-direction: row; align-items: center; justify-content: space-between; }
+  .auth-panel-right { padding: 36px 20px; }
+  .jr-dg { grid-template-columns: 1fr 1fr; }
+  .fname-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     LANDING
+════════════════════════════════════════ -->
+<div id="pg-landing" class="page active">
+  <nav>
+    <div class="nav-brand" onclick="go('landing')">Karigar<span>Now</span></div>
+    <div class="nav-links">
+      <button class="nav-link cur" onclick="go('landing')">Home</button>
+      <button class="nav-link" onclick="go('services')">Services</button>
+      <button class="nav-link" onclick="go('customer')">Find Workers</button>
+      <button class="nav-link" onclick="go('thekedar')">For Thekedars</button>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-ghost" onclick="go('login')">Log in</button>
+      <button class="btn-solid" onclick="go('register')">Join free</button>
+    </div>
+  </nav>
+
+  <div class="hero-wrap">
+    <div class="hero-left">
+      <div>
+        <div class="hero-label">India's Home Labour Platform — Indore, MP</div>
+        <h1 class="hero-title f-disp">
+          Real<br><span class="ital">workers,</span><br>on demand.
+        </h1>
+      </div>
+      <div class="hero-tagline-wrap">
+        <p class="hero-tagline">
+          "Apna kaam, apna worker" — connect directly with trusted local Thekedars across 6 trades.
+        </p>
+        <div class="hero-ctas">
+          <button class="btn-big" onclick="go('services')">Browse Services</button>
+          <button class="btn-big out" onclick="go('register')">Join as Thekedar</button>
+        </div>
+      </div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-right">
+      <div class="hero-stat-block">
+        <div class="hs-label">Verified Thekedars</div>
+        <div class="hs-val or">2,400+</div>
+        <div class="hs-sub">across Madhya Pradesh</div>
+      </div>
+      <div class="hero-stat-block">
+        <div class="hs-label">Jobs Completed</div>
+        <div class="hs-val">18,000+</div>
+        <div class="hs-sub">in the last 12 months</div>
+      </div>
+      <div class="hero-stat-block">
+        <div class="hs-label">Average Rating</div>
+        <div class="hs-val or">4.8 / 5</div>
+        <div class="hs-sub">from verified customers</div>
+      </div>
+      <div class="hero-stat-block">
+        <div class="hs-label">Avg. Response</div>
+        <div class="hs-val">47 min</div>
+        <div class="hs-sub">from booking to dispatch</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ticker-strip">
+    <div class="ticker-inner">
+      <div class="tick-item"><span>2,400+</span>Verified Thekedars</div>
+      <div class="tick-item"><span>18K+</span>Jobs Completed</div>
+      <div class="tick-item"><span>4.8</span>Platform Rating</div>
+      <div class="tick-item"><span>47 min</span>Avg. Response Time</div>
+      <div class="tick-item"><span>6</span>Trade Categories</div>
+      <div class="tick-item"><span>100%</span>Escrow Protected</div>
+    </div>
+  </div>
+
+  <div class="svc-section">
+    <div class="svc-intro">
+      <div>
+        <div class="svc-intro-label">Services</div>
+        <h2 class="svc-intro-title f-disp">Every trade, covered.</h2>
+        <p class="svc-intro-p">From a leaking tap to a full repaint — find the right Thekedar with the right team, at transparent rates.</p>
+      </div>
+      <div class="svc-intro-cta">
+        <button class="btn-big" onclick="go('services')">Browse all</button>
+      </div>
+    </div>
+    <div class="svc-grid-area">
+      <div class="svc-cell" onclick="goSvc('Plumbing')">
+        <div class="sc-num">01</div>
+        <div class="sc-name">Plumbing</div>
+        <div class="sc-price">from Rs. 180 / worker / hr</div>
+        <div class="sc-tag">Most Booked</div>
+      </div>
+      <div class="svc-cell" onclick="goSvc('Painting')">
+        <div class="sc-num">02</div>
+        <div class="sc-name">Painting</div>
+        <div class="sc-price">from Rs. 220 / worker / hr</div>
+        <div class="sc-tag">Popular</div>
+      </div>
+      <div class="svc-cell" onclick="goSvc('Electrical')">
+        <div class="sc-num">03</div>
+        <div class="sc-name">Electrical</div>
+        <div class="sc-price">from Rs. 250 / worker / hr</div>
+        <div class="sc-tag">Licensed Only</div>
+      </div>
+      <div class="svc-cell" onclick="goSvc('Putty and Plaster')">
+        <div class="sc-num">04</div>
+        <div class="sc-name">Putty and Plaster</div>
+        <div class="sc-price">from Rs. 200 / worker / hr</div>
+        <div class="sc-tag">Pre-paint Prep</div>
+      </div>
+      <div class="svc-cell" onclick="goSvc('Tile Work')">
+        <div class="sc-num">05</div>
+        <div class="sc-name">Tile Work</div>
+        <div class="sc-price">from Rs. 240 / worker / hr</div>
+        <div class="sc-tag">Available</div>
+      </div>
+      <div class="svc-cell" onclick="goSvc('Carpentry')">
+        <div class="sc-num">06</div>
+        <div class="sc-name">Carpentry</div>
+        <div class="sc-price">from Rs. 300 / worker / hr</div>
+        <div class="sc-tag">Skilled Trade</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="how-section">
+    <div class="how-cell">
+      <div class="how-num f-disp">01</div>
+      <div class="how-title f-disp">Choose Service</div>
+      <div class="how-desc">Pick from 12 trade categories with upfront, per-worker pricing. No hidden charges.</div>
+    </div>
+    <div class="how-cell">
+      <div class="how-num f-disp">02</div>
+      <div class="how-title f-disp">See Thekedars</div>
+      <div class="how-desc">Browse verified Thekedars near you — compare ratings, team size, and live availability.</div>
+    </div>
+    <div class="how-cell">
+      <div class="how-num f-disp">03</div>
+      <div class="how-title f-disp">Book and Pay</div>
+      <div class="how-desc">Your payment is held in secure escrow and only released when you confirm the job is done.</div>
+    </div>
+    <div class="how-cell">
+      <div class="how-num f-disp">04</div>
+      <div class="how-title f-disp">Rate and Review</div>
+      <div class="how-desc">Leave a rating to build platform trust and help the next customer decide with confidence.</div>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <div class="f-brand">Karigar<span>Now</span></div>
+      <div style="margin-top:5px;font-size:12px;">India's most trusted home labour platform</div>
+    </div>
+    <div class="f-links">
+      <span class="f-link">About</span>
+      <span class="f-link">Careers</span>
+      <span class="f-link">Blog</span>
+      <span class="f-link">Privacy</span>
+      <span class="f-link">Support</span>
+    </div>
+    <div class="f-copy">2025 KarigarNow Technologies Pvt. Ltd.</div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════════════
+     LOGIN
+════════════════════════════════════════ -->
+<div id="pg-login" class="page">
+  <nav>
+    <div class="nav-brand" onclick="go('landing')">Karigar<span>Now</span></div>
+    <div class="nav-actions" style="margin-left:0;border-left:none;padding-left:0;">
+      <button class="btn-ghost" onclick="go('landing')">Back to home</button>
+    </div>
+  </nav>
+  <div class="auth-shell">
+    <div class="auth-panel-left">
+      <div class="auth-left-top">
+        <span class="auth-left-label">Welcome back</span>
+        <h2 class="auth-left-headline f-disp">
+          Good to see<br>you <em>again.</em>
+        </h2>
+        <p class="auth-left-sub">Log in and get back to booking trusted workers — or managing your team.</p>
+      </div>
+      <div class="auth-proof-row">
+        <div class="auth-proof-item">
+          <div class="ap-num">2.4K</div>
+          <div class="ap-txt"><strong>Verified Thekedars</strong> across Madhya Pradesh, ready to take your job.</div>
+        </div>
+        <div class="auth-proof-item">
+          <div class="ap-num">4.8</div>
+          <div class="ap-txt"><strong>Platform rating</strong> based on 18,000+ completed jobs and verified reviews.</div>
+        </div>
+      </div>
+      <div class="auth-bg-num">KN</div>
+    </div>
+
+    <div class="auth-panel-right">
+      <div class="auth-form-wrap">
+        <div class="auth-mode-tabs">
+          <button class="auth-mode-tab on">Log in</button>
+          <button class="auth-mode-tab" onclick="go('register')">Create account</button>
+        </div>
+        <h2 class="auth-form-title f-disp">Log in</h2>
+        <p class="auth-form-sub">Enter your details below to access your account.</p>
+        <div class="aform">
+          <div class="afield">
+            <label class="aflbl">Mobile or email</label>
+            <input class="ainput" type="text" placeholder="98XXXXXXXX or you@email.com">
+          </div>
+          <div class="afield">
+            <label class="aflbl">Password</label>
+            <input class="ainput" type="password" placeholder="Your password">
+          </div>
+          <div style="text-align:right;margin-top:-4px;">
+            <span style="font-size:13px;color:var(--accent);cursor:pointer;font-weight:700;">Forgot password?</span>
+          </div>
+          <button class="btn-auth-submit" onclick="doLogin()">Log in to KarigarNow</button>
+          <div class="or-divider">or</div>
+          <button class="btn-ghost" style="width:100%;padding:12px;font-size:14px;" onclick="doLogin()">Continue with Google</button>
+        </div>
+        <div class="auth-switch-line" style="margin-top:20px;">
+          New here? <a onclick="go('register')">Create a free account</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     REGISTER
+════════════════════════════════════════ -->
+<div id="pg-register" class="page">
+  <nav>
+    <div class="nav-brand" onclick="go('landing')">Karigar<span>Now</span></div>
+    <div class="nav-actions" style="margin-left:0;border-left:none;padding-left:0;">
+      <button class="btn-ghost" onclick="go('login')">Already have an account</button>
+    </div>
+  </nav>
+  <div class="auth-shell">
+    <div class="auth-panel-left">
+      <div class="auth-left-top">
+        <span class="auth-left-label">Join the platform</span>
+        <h2 class="auth-left-headline f-disp">
+          Work smarter.<br><em>Book faster.</em>
+        </h2>
+        <p class="auth-left-sub">Whether you're booking workers or running a crew — KarigarNow is built for you.</p>
+      </div>
+      <div class="auth-proof-row">
+        <div class="auth-proof-item">
+          <div class="ap-num">0</div>
+          <div class="ap-txt"><strong>Zero platform fee</strong> for customers. You only pay the Thekedar's rate.</div>
+        </div>
+        <div class="auth-proof-item">
+          <div class="ap-num">100%</div>
+          <div class="ap-txt"><strong>Escrow protected.</strong> Payment releases only when you confirm the job is done.</div>
+        </div>
+        <div class="auth-proof-item">
+          <div class="ap-num">47</div>
+          <div class="ap-txt"><strong>Minutes average</strong> from booking to worker dispatch in your area.</div>
+        </div>
+      </div>
+      <div class="auth-bg-num">KN</div>
+    </div>
+
+    <div class="auth-panel-right">
+      <div class="auth-form-wrap">
+        <div class="auth-mode-tabs">
+          <button class="auth-mode-tab" onclick="go('login')">Log in</button>
+          <button class="auth-mode-tab on">Create account</button>
+        </div>
+        <h2 class="auth-form-title f-disp">Join KarigarNow</h2>
+        <p class="auth-form-sub">Sign up in under a minute. No credit card needed.</p>
+
+        <div style="margin-bottom:24px;">
+          <div class="aflbl" style="margin-bottom:10px;">I am joining as</div>
+          <div class="register-roles">
+            <div class="reg-role on" id="rr-c" onclick="selRole('customer')">
+              <div class="rr-title f-disp">Customer</div>
+              <div class="rr-desc">I need workers for home or construction jobs</div>
+            </div>
+            <div class="reg-role" id="rr-t" onclick="selRole('thekedar')">
+              <div class="rr-title f-disp">Thekedar</div>
+              <div class="rr-desc">I manage a team and take labour contracts</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="aform">
+          <div class="fname-row">
+            <div class="afield"><label class="aflbl">First name</label><input class="ainput" placeholder="Rahul"></div>
+            <div class="afield"><label class="aflbl">Last name</label><input class="ainput" placeholder="Sharma"></div>
+          </div>
+          <div class="afield"><label class="aflbl">Mobile number</label><input class="ainput" type="tel" placeholder="+91 98XXXXXXXX"></div>
+          <div class="afield"><label class="aflbl">Email address</label><input class="ainput" type="email" placeholder="you@email.com"></div>
+          <div class="afield">
+            <label class="aflbl">City</label>
+            <select class="asel">
+              <option>Indore</option><option>Bhopal</option><option>Jabalpur</option>
+              <option>Mumbai</option><option>Pune</option><option>Delhi</option>
+            </select>
+          </div>
+          <div class="afield hidden" id="tk-extra">
+            <label class="aflbl">Trade specialization</label>
+            <select class="asel">
+              <option>Painting</option><option>Plumbing</option><option>Electrical</option>
+              <option>Tile Work</option><option>Carpentry</option><option>Mixed Trades</option>
+            </select>
+          </div>
+          <div class="afield"><label class="aflbl">Password</label><input class="ainput" type="password" placeholder="At least 8 characters"></div>
+          <button class="btn-auth-submit" onclick="doRegister()">Create my account</button>
+        </div>
+        <div class="auth-switch-line" style="margin-top:14px;font-size:12px;color:var(--muted);">
+          By joining you agree to our <a>Terms</a> and <a>Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SERVICES BROWSE
+════════════════════════════════════════ -->
+<div id="pg-services" class="page">
+  <nav>
+    <div class="nav-brand" onclick="go('landing')">Karigar<span>Now</span></div>
+    <div class="nav-links">
+      <button class="nav-link" onclick="go('landing')">Home</button>
+      <button class="nav-link cur">Services</button>
+      <button class="nav-link" onclick="go('customer')">Dashboard</button>
+    </div>
+    <div class="nav-actions">
+      <div class="nav-user-chip">
+        <div class="user-monogram acc">R</div>
+        <span class="user-name">Rahul</span>
+        <button class="btn-sm-dash" onclick="go('customer')">My Dashboard</button>
+      </div>
+    </div>
+  </nav>
+  <div class="svp-wrap">
+    <div class="svp-head">
+      <div>
+        <h1 class="svp-title f-disp">Find a <span>Thekedar</span></h1>
+        <p class="svp-sub">Browse by trade, compare ratings, and book in minutes</p>
+      </div>
+    </div>
+
+    <div class="svp-search-row">
+      <input class="svp-sinput" type="text" placeholder="Search by service, area, or thekedar name...">
+      <button class="svp-sbtn" onclick="toast('Showing results','ok')">Search</button>
+    </div>
+
+    <div class="svp-layout">
+      <div class="svp-sidebar">
+        <div class="svp-sb-hdr">Trade Category</div>
+        <div class="svp-sb-item on" onclick="filSvc(this,'All Services')">All Services <span class="svp-sb-ct">38</span></div>
+        <div class="svp-sb-item" onclick="filSvc(this,'Painting')">Painting <span class="svp-sb-ct">9</span></div>
+        <div class="svp-sb-item" onclick="filSvc(this,'Plumbing')">Plumbing <span class="svp-sb-ct">7</span></div>
+        <div class="svp-sb-item" onclick="filSvc(this,'Electrical')">Electrical <span class="svp-sb-ct">5</span></div>
+        <div class="svp-sb-item" onclick="filSvc(this,'Putty and Plaster')">Putty and Plaster <span class="svp-sb-ct">6</span></div>
+        <div class="svp-sb-item" onclick="filSvc(this,'Tile Work')">Tile Work <span class="svp-sb-ct">5</span></div>
+        <div class="svp-sb-item" onclick="filSvc(this,'Carpentry')">Carpentry <span class="svp-sb-ct">6</span></div>
+      </div>
+      <div>
+        <div class="svp-con-hd">
+          <div>
+            <div class="svp-con-title f-disp" id="svc-hdg">All Services</div>
+            <div class="svp-con-meta">Showing 4 of 38 Thekedars near Indore</div>
+          </div>
+          <div class="sort-row">
+            <button class="sort-pill on" onclick="setSrt(this)">Nearest</button>
+            <button class="sort-pill" onclick="setSrt(this)">Rating</button>
+            <button class="sort-pill" onclick="setSrt(this)">Price</button>
+          </div>
+        </div>
+        <div class="tk-list">
+          <div class="tk-row">
+            <div class="tk-mono" style="background:var(--ink);">RK</div>
+            <div class="tk-info">
+              <div class="tk-name-row">Ramesh Kumar <span class="badge b-gold">Gold</span></div>
+              <div class="tk-meta-row"><span>4.9 rating · 312 jobs</span><span>1.2 km away</span><span>12 workers</span><span>Painting, Putty, Plaster</span></div>
+            </div>
+            <div class="tk-right-col">
+              <div class="tk-rate-disp">Rs. 200<small>/worker/hr</small></div>
+              <button class="btn-bk" onclick="openMod('Ramesh Kumar','Rs. 200/hr','Rs. 3,200')">Book Now</button>
+            </div>
+          </div>
+          <div class="tk-row">
+            <div class="tk-mono" style="background:#4F46E5;">SP</div>
+            <div class="tk-info">
+              <div class="tk-name-row">Suresh Patel <span class="badge b-gold">Gold</span></div>
+              <div class="tk-meta-row"><span>4.8 rating · 258 jobs</span><span>2.1 km away</span><span>8 workers</span><span>Painting, Electrical</span></div>
+            </div>
+            <div class="tk-right-col">
+              <div class="tk-rate-disp">Rs. 220<small>/worker/hr</small></div>
+              <button class="btn-bk" onclick="openMod('Suresh Patel','Rs. 220/hr','Rs. 3,520')">Book Now</button>
+            </div>
+          </div>
+          <div class="tk-row">
+            <div class="tk-mono" style="background:#0369A1;">MV</div>
+            <div class="tk-info">
+              <div class="tk-name-row">Mahendra Verma <span class="badge b-sil">Silver</span></div>
+              <div class="tk-meta-row"><span>4.6 rating · 134 jobs</span><span>3.4 km away</span><span>6 workers</span><span>Plumbing, Tile Work</span></div>
+            </div>
+            <div class="tk-right-col">
+              <div class="tk-rate-disp">Rs. 190<small>/worker/hr</small></div>
+              <button class="btn-bk" onclick="openMod('Mahendra Verma','Rs. 190/hr','Rs. 3,040')">Book Now</button>
+            </div>
+          </div>
+          <div class="tk-row">
+            <div class="tk-mono" style="background:#047857;">AK</div>
+            <div class="tk-info">
+              <div class="tk-name-row">Anil Kumar <span class="badge b-new">New</span></div>
+              <div class="tk-meta-row"><span>4.4 rating · 22 jobs</span><span>4.0 km away</span><span>4 workers</span><span>Carpentry, Plumbing</span></div>
+            </div>
+            <div class="tk-right-col">
+              <div class="tk-rate-disp">Rs. 170<small>/worker/hr</small></div>
+              <button class="btn-bk" onclick="openMod('Anil Kumar','Rs. 170/hr','Rs. 2,720')">Book Now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="f-brand">Karigar<span>Now</span></div>
+    <div class="f-links"><span class="f-link">About</span><span class="f-link">Privacy</span><span class="f-link">Support</span></div>
+    <div class="f-copy">2025 KarigarNow Technologies Pvt. Ltd.</div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════════════
+     CUSTOMER DASHBOARD
+════════════════════════════════════════ -->
+<div id="pg-customer" class="page">
+  <nav>
+    <div class="nav-brand" onclick="go('landing')">Karigar<span>Now</span></div>
+    <div class="nav-links">
+      <button class="nav-link" onclick="go('landing')">Home</button>
+      <button class="nav-link" onclick="go('services')">Services</button>
+      <button class="nav-link cur">Dashboard</button>
+    </div>
+    <div class="nav-actions">
+      <div class="nav-user-chip">
+        <div class="user-monogram">R</div>
+        <span class="user-name">Rahul Sharma</span>
+        <button class="btn-lo" onclick="go('landing')">Log out</button>
+      </div>
+    </div>
+  </nav>
+  <div class="dash-shell">
+    <div class="dash-side">
+      <div class="ds-section">Menu</div>
+      <div class="ds-item on" onclick="cTab(this,'c-book')">Book a Job</div>
+      <div class="ds-item" onclick="cTab(this,'c-active')">Active Bookings <span class="ds-bdg">2</span></div>
+      <div class="ds-item" onclick="cTab(this,'c-hist')">Booking History</div>
+      <div class="ds-section">Account</div>
+      <div class="ds-item" onclick="toast('Profile settings coming soon','ok')">Profile</div>
+      <div class="ds-item" onclick="toast('Payment methods coming soon','ok')">Payments</div>
+      <div class="ds-item" onclick="go('landing')">Log out</div>
+    </div>
+    <div class="dash-main">
+      <div class="dash-tb-row">
+        <div class="dash-pg-hd">
+          <div class="dash-pg-title f-disp">Welcome back, Rahul</div>
+          <div class="dash-pg-sub">Customer account · Indore, MP</div>
+        </div>
+        <div class="dash-right-bits">
+          <div class="city-chip">Indore, <strong>MP</strong></div>
+          <div class="notif-btn" onclick="toast('2 new notifications','ok')">N<div class="notif-dot"></div></div>
+        </div>
+      </div>
+
+      <div id="c-book">
+        <div class="card mb24">
+          <div class="card-hd"><div class="card-hd-t">Book a Job</div></div>
+          <div class="card-bd">
+            <div class="bfg">
+              <div class="afield"><label class="aflbl">Service Category</label>
+                <select class="asel" id="c-svc">
+                  <option>Plumbing</option><option>Painting</option>
+                  <option>Electrical</option><option>Putty and Plaster</option>
+                  <option>Tile Work</option><option>Carpentry</option>
+                </select>
+              </div>
+              <div class="afield"><label class="aflbl">Your Address</label>
+                <input class="ainput" type="text" value="42, Vijay Nagar, Indore - 452001">
+              </div>
+              <div class="afield"><label class="aflbl">Workers Needed</label>
+                <div class="stepper">
+                  <button class="stp-btn" onclick="chW(-1)">-</button>
+                  <span class="stp-val" id="wct">2</span>
+                  <button class="stp-btn" onclick="chW(1)">+</button>
+                </div>
+              </div>
+              <div class="afield"><label class="aflbl">Preferred Date and Time</label>
+                <input class="ainput" type="datetime-local" value="2025-06-20T09:00">
+              </div>
+              <div class="afield bfg-full"><label class="aflbl">Job Description</label>
+                <textarea class="atxt" rows="3">Need 2 painters for interior walls of a 3BHK flat. Two coats of Asian Paints required.</textarea>
+              </div>
+            </div>
+            <button class="btn-big" style="margin-top:18px;" onclick="showRes()">Find Thekedars</button>
+          </div>
+        </div>
+        <div id="c-results" class="hidden">
+          <div class="card">
+            <div class="card-hd"><div class="card-hd-t">Thekedars near you</div><div style="font-size:12.5px;color:var(--muted);">4 results, sorted by distance</div></div>
+            <div class="card-bd">
+              <div class="res-list">
+                <div class="res-row"><div class="res-mono" style="background:var(--ink);">RK</div><div class="res-info"><div class="res-n">Ramesh Kumar <span class="badge b-gold">Gold</span></div><div class="res-m"><span>4.9</span><span>1.2 km</span><span>12 workers</span><span>Painting, Putty</span></div></div><div class="res-r"><div class="res-rate">Rs. 200<small>/worker/hr</small></div><button class="btn-bk" onclick="openMod('Ramesh Kumar','Rs. 200/hr','Rs. 3,200')">Book</button></div></div>
+                <div class="res-row"><div class="res-mono" style="background:#4F46E5;">SP</div><div class="res-info"><div class="res-n">Suresh Patel <span class="badge b-gold">Gold</span></div><div class="res-m"><span>4.8</span><span>2.1 km</span><span>8 workers</span><span>Painting, Electrical</span></div></div><div class="res-r"><div class="res-rate">Rs. 220<small>/worker/hr</small></div><button class="btn-bk" onclick="openMod('Suresh Patel','Rs. 220/hr','Rs. 3,520')">Book</button></div></div>
+                <div class="res-row"><div class="res-mono" style="background:#0369A1;">MV</div><div class="res-info"><div class="res-n">Mahendra Verma <span class="badge b-sil">Silver</span></div><div class="res-m"><span>4.6</span><span>3.4 km</span><span>6 workers</span><span>Plumbing, Tile</span></div></div><div class="res-r"><div class="res-rate">Rs. 190<small>/worker/hr</small></div><button class="btn-bk" onclick="openMod('Mahendra Verma','Rs. 190/hr','Rs. 3,040')">Book</button></div></div>
+                <div class="res-row"><div class="res-mono" style="background:#047857;">AK</div><div class="res-info"><div class="res-n">Anil Kumar <span class="badge b-new">New</span></div><div class="res-m"><span>4.4</span><span>4.0 km</span><span>4 workers</span><span>Carpentry, Plumbing</span></div></div><div class="res-r"><div class="res-rate">Rs. 170<small>/worker/hr</small></div><button class="btn-bk" onclick="openMod('Anil Kumar','Rs. 170/hr','Rs. 2,720')">Book</button></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="c-active" class="hidden">
+        <div class="card">
+          <div class="card-hd"><div class="card-hd-t">Active Bookings</div></div>
+          <div class="card-bd">
+            <div class="bk-grid">
+              <div class="bk-c live">
+                <div class="st-pill st-live"><div class="st-dot"></div>Worker On The Way</div>
+                <div class="bk-svc">Painting</div>
+                <div class="bk-det">Thekedar: Ramesh Kumar · Booked today at 9:00 AM<br>2 workers · Vijay Nagar, Indore</div>
+                <div class="otp-box"><div><div class="otp-lbl">Worker OTP</div><div class="otp-hint">Show this to verify arrival</div></div><div class="otp-num">4821</div></div>
+              </div>
+              <div class="bk-c done">
+                <div class="st-pill st-done"><div class="st-dot"></div>Completed</div>
+                <div class="bk-svc">Plumbing</div>
+                <div class="bk-det">Thekedar: Suresh Patel · Completed yesterday<br>1 worker · Rs. 1,760 released from escrow</div>
+                <div>
+                  <div style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-top:12px;">Rate this job</div>
+                  <div class="stars-row" id="sr-c1">
+                    <button class="star" onclick="rateStar('c1',1)">*</button>
+                    <button class="star" onclick="rateStar('c1',2)">*</button>
+                    <button class="star" onclick="rateStar('c1',3)">*</button>
+                    <button class="star" onclick="rateStar('c1',4)">*</button>
+                    <button class="star" onclick="rateStar('c1',5)">*</button>
+                  </div>
+                  <button class="btn-rate-it" onclick="subRating('c1')">Submit rating</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="c-hist" class="hidden">
+        <div class="card">
+          <div class="card-hd"><div class="card-hd-t">Booking History</div></div>
+          <table class="ht">
+            <thead><tr><th>Date</th><th>Service</th><th>Thekedar</th><th>Workers</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>12 Jun 2025</td><td>Painting</td><td>Ramesh Kumar</td><td>3</td><td>Rs. 4,800</td><td><span class="pill p-done">Completed</span></td></tr>
+              <tr><td>5 Jun 2025</td><td>Plumbing</td><td>Mahendra Verma</td><td>1</td><td>Rs. 760</td><td><span class="pill p-done">Completed</span></td></tr>
+              <tr><td>28 May 2025</td><td>Electrical</td><td>Suresh Patel</td><td>2</td><td>Rs. 2,000</td><td><span class="pill p-done">Completed</span></td></tr>
+              <tr><td>18 May 2025</td><td>Putty Work</td><td>Ramesh Kumar</td><td>4</td><td>Rs. 6,400</td><td><span class="pill p-done">Completed</span></td></tr>
+              <tr><td>2 May 2025</td><td>Carpentry</td><td>Anil Kumar</td><td>2</td><td>Rs. 2,720</td><td><span class="pill p-done">Completed</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     THEKEDAR DASHBOARD
+════════════════════════════════════════ -->
+<div id="pg-thekedar" class="page">
+  <nav>
+    <div class="nav-brand" onclick="go('landing')">Karigar<span>Now</span></div>
+    <div class="nav-links">
+      <button class="nav-link" onclick="go('landing')">Home</button>
+      <button class="nav-link cur">Thekedar Panel</button>
+      <button class="nav-link" onclick="go('customer')">Customer View</button>
+    </div>
+    <div class="nav-actions">
+      <div class="nav-user-chip">
+        <div class="user-monogram">RB</div>
+        <span class="user-name">Ramesh Bhai</span>
+        <button class="btn-lo" onclick="go('landing')">Log out</button>
+      </div>
+    </div>
+  </nav>
+  <div class="dash-shell">
+    <div class="dash-side">
+      <div class="ds-section">Menu</div>
+      <div class="ds-item on" onclick="tTab(this,'t-jobs')">Job Requests <span class="ds-bdg">2</span></div>
+      <div class="ds-item" onclick="tTab(this,'t-active')">Active Jobs</div>
+      <div class="ds-item" onclick="tTab(this,'t-team')">My Team</div>
+      <div class="ds-item" onclick="tTab(this,'t-earn')">Earnings</div>
+      <div class="ds-section">Account</div>
+      <div class="ds-item" onclick="toast('Profile settings coming soon','ok')">Profile</div>
+      <div class="ds-item" onclick="toast('Payout settings coming soon','ok')">Payouts</div>
+      <div class="ds-item" onclick="go('landing')">Log out</div>
+    </div>
+    <div class="dash-main">
+      <div class="dash-tb-row">
+        <div class="dash-pg-hd">
+          <div class="dash-pg-title f-disp">Welcome, Ramesh Bhai</div>
+          <div class="dash-pg-sub">Thekedar account · Indore, MP</div>
+        </div>
+        <div class="dash-right-bits">
+          <div class="online-tg" onclick="togOnline()">
+            <div class="tg-tr on" id="tgtr"><div class="tg-th"></div></div>
+            <span class="tg-lbl on" id="tglbl">Online</span>
+          </div>
+          <div class="notif-btn" onclick="toast('2 new job requests','ok')">N<div class="notif-dot"></div></div>
+        </div>
+      </div>
+
+      <div class="sc-row">
+        <div class="sc"><div class="sc-lbl">Today's Jobs</div><div class="sc-val or">4</div></div>
+        <div class="sc"><div class="sc-lbl">Pending</div><div class="sc-val yl">2</div></div>
+        <div class="sc"><div class="sc-lbl">Earnings Today</div><div class="sc-val gr">Rs. 840</div></div>
+        <div class="sc"><div class="sc-lbl">Rating</div><div class="sc-val or">4.8</div></div>
+        <div class="sc"><div class="sc-lbl">Total Jobs</div><div class="sc-val">312</div></div>
+      </div>
+
+      <div id="t-jobs">
+        <div class="card">
+          <div class="card-hd"><div class="card-hd-t">Incoming Job Requests</div></div>
+          <div class="card-bd">
+            <div class="jr-grid">
+              <div class="jr-c" id="jr1">
+                <div class="jr-hd"><div><div class="jr-cn">Vikram Singh</div><div class="jr-ca">Vijay Nagar, Indore</div></div><span class="badge b-or">New</span></div>
+                <div class="jr-dg">
+                  <div class="jr-d"><div class="jr-dl">Service</div><div class="jr-dv">Painting</div></div>
+                  <div class="jr-d"><div class="jr-dl">Workers</div><div class="jr-dv">3 needed</div></div>
+                  <div class="jr-d"><div class="jr-dl">Date</div><div class="jr-dv">20 Jun, 9 AM</div></div>
+                  <div class="jr-d"><div class="jr-dl">Est. Total</div><div class="jr-dv or">Rs. 4,800</div></div>
+                </div>
+                <div id="jr1-a" class="jr-btns"><button class="btn-acc" onclick="accJob(1)">Accept</button><button class="btn-dec" onclick="decJob(1)">Decline</button></div>
+              </div>
+              <div class="jr-c" id="jr2">
+                <div class="jr-hd"><div><div class="jr-cn">Pooja Agrawal</div><div class="jr-ca">Palasia, Indore</div></div><span class="badge b-or">New</span></div>
+                <div class="jr-dg">
+                  <div class="jr-d"><div class="jr-dl">Service</div><div class="jr-dv">Putty Work</div></div>
+                  <div class="jr-d"><div class="jr-dl">Workers</div><div class="jr-dv">2 needed</div></div>
+                  <div class="jr-d"><div class="jr-dl">Date</div><div class="jr-dv">21 Jun, 10 AM</div></div>
+                  <div class="jr-d"><div class="jr-dl">Est. Total</div><div class="jr-dv or">Rs. 3,200</div></div>
+                </div>
+                <div id="jr2-a" class="jr-btns"><button class="btn-acc" onclick="accJob(2)">Accept</button><button class="btn-dec" onclick="decJob(2)">Decline</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="t-active" class="hidden">
+        <div class="card">
+          <div class="card-hd"><div class="card-hd-t">Active Jobs</div></div>
+          <div class="card-bd">
+            <div class="aj-grid">
+              <div class="aj-c">
+                <div class="aj-hd"><div><div class="aj-n">Rahul Sharma</div><div class="aj-d">Painting · Vijay Nagar</div></div><span class="badge b-bl">Dispatched</span></div>
+                <div class="aj-w">Worker: <strong>Deepak Yadav</strong></div>
+                <div class="otp-sm-l">OTP for worker</div>
+                <div class="otp-xl">4821</div>
+                <div class="otp-cap">Worker shows this to the customer on arrival</div>
+              </div>
+              <div class="aj-c">
+                <div class="aj-hd"><div><div class="aj-n">Sneha Joshi</div><div class="aj-d">Plumbing · AB Road</div></div><span class="badge b-or">In Progress</span></div>
+                <div class="aj-w">Worker: <strong>Mohan Kushwah</strong></div>
+                <div class="otp-sm-l">OTP for worker</div>
+                <div class="otp-xl">7364</div>
+                <div class="otp-cap">Worker shows this to the customer on arrival</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="t-team" class="hidden">
+        <div class="card">
+          <div class="card-hd"><div class="card-hd-t">My Team</div></div>
+          <table class="tt">
+            <thead><tr><th>Worker</th><th>Skills</th><th>Availability</th><th>Jobs Done</th><th>Daily Rate</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Deepak Yadav</strong></td><td><span class="skill-ch">Painter</span><span class="skill-ch">Putty</span></td><td><div class="av-tg" onclick="togAv(this)"><div class="av-tr on"><div class="av-th"></div></div><span class="av-lb on">Available</span></div></td><td>87</td><td>Rs. 600</td></tr>
+              <tr><td><strong>Mohan Kushwah</strong></td><td><span class="skill-ch">Plumber</span><span class="skill-ch">Tile</span></td><td><div class="av-tg" onclick="togAv(this)"><div class="av-tr"><div class="av-th"></div></div><span class="av-lb off">Busy</span></div></td><td>62</td><td>Rs. 580</td></tr>
+              <tr><td><strong>Raju Mishra</strong></td><td><span class="skill-ch">Electrician</span></td><td><div class="av-tg" onclick="togAv(this)"><div class="av-tr on"><div class="av-th"></div></div><span class="av-lb on">Available</span></div></td><td>104</td><td>Rs. 700</td></tr>
+              <tr><td><strong>Santosh Bind</strong></td><td><span class="skill-ch">Carpenter</span><span class="skill-ch">Plumber</span></td><td><div class="av-tg" onclick="togAv(this)"><div class="av-tr on"><div class="av-th"></div></div><span class="av-lb on">Available</span></div></td><td>45</td><td>Rs. 620</td></tr>
+              <tr><td><strong>Prem Sahu</strong></td><td><span class="skill-ch">Painter</span></td><td><div class="av-tg" onclick="togAv(this)"><div class="av-tr"><div class="av-th"></div></div><span class="av-lb off">Busy</span></div></td><td>31</td><td>Rs. 550</td></tr>
+              <tr><td><strong>Dinesh Lodhi</strong></td><td><span class="skill-ch">Putty</span><span class="skill-ch">Tile</span></td><td><div class="av-tg" onclick="togAv(this)"><div class="av-tr on"><div class="av-th"></div></div><span class="av-lb on">Available</span></div></td><td>56</td><td>Rs. 560</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="t-earn" class="hidden">
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-hd-t">Earnings — Last 7 Days</div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-family:'Fraunces',serif;font-size:26px;font-weight:900;letter-spacing:-1px;color:var(--accent);">Rs. 5,040</span>
+              <span style="font-size:11.5px;background:var(--gbg);color:var(--green);padding:3px 10px;border-radius:100px;font-weight:700;">+12% this week</span>
+            </div>
+          </div>
+          <div class="card-bd">
+            <div class="echart" id="echart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="modal-ov" id="bk-mod">
+  <div class="modal">
+    <button class="modal-x" onclick="closeMod()">x</button>
+    <div class="modal-t f-disp">Confirm Booking</div>
+    <div class="m-row"><span class="m-lbl">Thekedar</span><span class="m-val" id="m-n">-</span></div>
+    <div class="m-row"><span class="m-lbl">Service</span><span class="m-val" id="m-s">-</span></div>
+    <div class="m-row"><span class="m-lbl">Workers</span><span class="m-val" id="m-w">-</span></div>
+    <div class="m-row"><span class="m-lbl">Rate</span><span class="m-val" id="m-r">-</span></div>
+    <div class="m-row"><span class="m-lbl">Estimated total (8 hrs)</span><span class="m-val big" id="m-t">-</span></div>
+    <div class="notice n-escrow">Payment is held in escrow and released only after you confirm the job is complete.</div>
+    <div class="notice n-otp">The worker presents a unique OTP on arrival to verify their identity before starting work.</div>
+    <button class="btn-confirm" onclick="confBook()">Confirm and Pay Securely</button>
+  </div>
+</div>
+
+<div class="tw" id="tw"></div>
+
+<script>
+const PAGES = ['landing','login','register','services','customer','thekedar'];
+function go(id) {
+  PAGES.forEach(p => { const e = document.getElementById('pg-'+p); if(e) e.classList.remove('active'); });
+  const t = document.getElementById('pg-'+id);
+  if(t) t.classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='thekedar') buildChart();
+}
+
+function goSvc(name) {
+  go('services');
+  document.getElementById('svc-hdg').textContent = name;
+  document.querySelectorAll('.svp-sb-item').forEach(el => {
+    const txt = el.firstChild.textContent.trim();
+    el.classList.toggle('on', txt === name || (name==='All' && txt.startsWith('All')));
+  });
+}
+function filSvc(el, name) {
+  document.querySelectorAll('.svp-sb-item').forEach(e => e.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('svc-hdg').textContent = name;
+  toast('Showing ' + name, 'ok');
+}
+function setSrt(btn) {
+  document.querySelectorAll('.sort-pill').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  toast('Sorted by ' + btn.textContent, 'ok');
+}
+
+let curRole = 'customer';
+function selRole(r) {
+  curRole = r;
+  document.getElementById('rr-c').classList.toggle('on', r==='customer');
+  document.getElementById('rr-t').classList.toggle('on', r==='thekedar');
+  document.getElementById('tk-extra').classList.toggle('hidden', r!=='thekedar');
+}
+function doLogin() {
+  toast('Welcome back, Rahul!', 'ok');
+  setTimeout(()=>go('customer'), 600);
+}
+function doRegister() {
+  toast('Account created! Welcome to KarigarNow', 'ok');
+  setTimeout(()=>go(curRole==='thekedar'?'thekedar':'customer'), 700);
+}
+
+let wc = 2;
+function chW(d) { wc = Math.max(1,Math.min(10,wc+d)); document.getElementById('wct').textContent = wc; }
+function showRes() {
+  const r = document.getElementById('c-results');
+  r.classList.remove('hidden');
+  r.style.animation = 'arrive .35s cubic-bezier(.16,1,.3,1)';
+  toast('Found 4 Thekedars near you', 'ok');
+}
+
+const cTabs = ['c-book','c-active','c-hist'];
+function cTab(el, id) {
+  document.querySelectorAll('#pg-customer .ds-item').forEach(e => e.classList.remove('on'));
+  el.classList.add('on');
+  cTabs.forEach(t => { const e=document.getElementById(t); if(e) e.classList.toggle('hidden', t!==id); });
+}
+const tkTabs = ['t-jobs','t-active','t-team','t-earn'];
+function tTab(el, id) {
+  document.querySelectorAll('#pg-thekedar .ds-item').forEach(e => e.classList.remove('on'));
+  el.classList.add('on');
+  tkTabs.forEach(t => { const e=document.getElementById(t); if(e) e.classList.toggle('hidden', t!==id); });
+  if(id==='t-earn') buildChart();
+}
+
+function openMod(name, rate, total) {
+  const svc = document.getElementById('c-svc');
+  document.getElementById('m-n').textContent = name;
+  document.getElementById('m-s').textContent = svc?svc.value:'Painting';
+  document.getElementById('m-w').textContent = wc+' worker'+(wc>1?'s':'');
+  document.getElementById('m-r').textContent = rate;
+  document.getElementById('m-t').textContent = total;
+  document.getElementById('bk-mod').classList.add('open');
+}
+function closeMod() { document.getElementById('bk-mod').classList.remove('open'); }
+document.getElementById('bk-mod').addEventListener('click', function(e){ if(e.target===this) closeMod(); });
+function confBook() { closeMod(); toast('Booking confirmed! Worker on the way.','ok'); }
+
+const ratings = {};
+function rateStar(id, val) {
+  ratings[id]=val;
+  document.querySelectorAll('#sr-'+id+' .star').forEach((s,i) => s.classList.toggle('lit', i<val));
+}
+function subRating(id) {
+  if(!ratings[id]) { toast('Select a star rating first','err'); return; }
+  toast('Rating submitted — '+ratings[id]+' out of 5. Thank you!','ok');
+}
+
+let isOnline = true;
+function togOnline() {
+  isOnline = !isOnline;
+  document.getElementById('tgtr').classList.toggle('on', isOnline);
+  const lb = document.getElementById('tglbl');
+  lb.textContent = isOnline?'Online':'Offline';
+  lb.className = 'tg-lbl '+(isOnline?'on':'off');
+  toast(isOnline?'You are now Online':'You are now Offline','ok');
+}
+function accJob(n) {
+  document.getElementById('jr'+n).classList.add('acc');
+  document.getElementById('jr'+n+'-a').innerHTML='<div class="res-banner rb-acc">Job accepted. Customer has been notified.</div>';
+  toast('Job accepted. Dispatch your workers.','ok');
+}
+function decJob(n) {
+  document.getElementById('jr'+n).classList.add('dec');
+  document.getElementById('jr'+n+'-a').innerHTML='<div class="res-banner rb-dec">Job declined.</div>';
+  toast('Job declined.','err');
+}
+function togAv(el) {
+  const tr = el.querySelector('.av-tr');
+  const lb = el.querySelector('.av-lb');
+  const on = tr.classList.toggle('on');
+  lb.textContent = on?'Available':'Busy';
+  lb.className = 'av-lb '+(on?'on':'off');
+}
+
+const eData = [{d:'Mon',v:620},{d:'Tue',v:480},{d:'Wed',v:900},{d:'Thu',v:340},{d:'Fri',v:760},{d:'Sat',v:1100},{d:'Sun',v:840}];
+function buildChart() {
+  const c = document.getElementById('echart');
+  if(!c || c.children.length>0) return;
+  const mx = Math.max(...eData.map(e=>e.v));
+  eData.forEach(item => {
+    const h = Math.round((item.v/mx)*110);
+    const col = document.createElement('div');
+    col.className = 'ec-col';
+    col.innerHTML = `<div class="ec-bw"><div class="ec-b" style="height:${h}px"><div class="ec-bv">Rs.${item.v}</div></div></div><div class="ec-day">${item.d}</div>`;
+    c.appendChild(col);
+  });
+}
+
+function toast(msg, type) {
+  const w = document.getElementById('tw');
+  const t = document.createElement('div');
+  t.className = 'toast '+(type||'ok');
+  const col = type==='ok'?'var(--green)':'var(--red)';
+  t.innerHTML = `<span style="font-size:10px;font-weight:900;color:${col};letter-spacing:.5px;">${type==='ok'?'OK':'ERR'}</span><span class="toast-msg">${msg}</span>`;
+  w.appendChild(t);
+  setTimeout(()=>{ t.style.cssText='opacity:0;transform:translateX(20px);transition:all .26s ease;'; setTimeout(()=>t.remove(),260); }, 3000);
+}
+</script>
+</body>
+</html>

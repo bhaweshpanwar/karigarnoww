@@ -43,4 +43,14 @@ spring-shell.log
 *.tmp
 *.cache
 
+# Client
+client/node_modules/
+client/dist/
+client/.env
+client/.env.local
+
+# Client build
+dist/
+build/
+
 *.class

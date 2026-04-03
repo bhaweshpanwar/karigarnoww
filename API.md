@@ -233,9 +233,43 @@ Authenticate using Google OAuth token.
 
 ---
 
+### 5. Get Current User
+
+**GET** `/api/auth/me`
+
+Returns the currently authenticated user's info. Used by the frontend to restore session on page reload.
+
+**Auth:** Yes (JWT cookie required)
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "User found",
+  "data": {
+    "id": "1d3e4bb3-2ee5-44bd-9ecf-efdc4e5dac41",
+    "name": "Rajesh Kumar",
+    "email": "rajesh@example.com",
+    "role": "consumer",
+    "photo": "https://..."
+  }
+}
+```
+
+**Error (401 Unauthorized):**
+```json
+{
+  "success": false,
+  "message": "Not authenticated",
+  "data": null
+}
+```
+
+---
+
 ## Consumer Services
 
-### 5. List Services
+### 6. List Services
 
 **GET** `/api/services`
 
@@ -261,7 +295,7 @@ Returns all active service categories available for booking.
 
 ---
 
-### 6. Get Service by Slug
+### 7. Get Service by Slug
 
 **GET** `/api/services/{slug}`
 
@@ -327,7 +361,7 @@ Returns service details with a paginated list of online thekedars offering this 
 
 ---
 
-### 7. Get Thekedar Profile
+### 8. Get Thekedar Profile
 
 **GET** `/api/thekedars/{id}`
 
@@ -388,7 +422,7 @@ Returns the full profile of a thekedar including services offered and recent rev
 
 ## Booking Module
 
-### 8. Create Booking
+### 9. Create Booking
 
 **POST** `/api/bookings`
 
@@ -451,7 +485,7 @@ Create a new service booking.
 
 ---
 
-### 9. List Bookings
+### 10. List Bookings
 
 **GET** `/api/bookings`
 
@@ -494,7 +528,7 @@ Returns bookings for the authenticated user. Consumers see their bookings, theke
 
 ---
 
-### 10. Get Booking Details
+### 11. Get Booking Details
 
 **GET** `/api/bookings/{id}`
 
@@ -549,7 +583,7 @@ Returns full booking details. Consumers see their own bookings, thekedars see as
 
 ---
 
-### 11. Accept Booking
+### 12. Accept Booking
 
 **PUT** `/api/bookings/{id}/accept`
 
@@ -596,7 +630,7 @@ Thekedar accepts a pending booking and generates OTP.
 
 ---
 
-### 12. Reject Booking
+### 13. Reject Booking
 
 **PUT** `/api/bookings/{id}/reject`
 
@@ -630,7 +664,7 @@ Thekedar rejects a pending booking. Payment is refunded.
 
 ---
 
-### 13. Dispatch Workers
+### 14. Dispatch Workers
 
 **PUT** `/api/bookings/{id}/dispatch`
 
@@ -681,7 +715,7 @@ Thekedar dispatches workers to the job site.
 
 ---
 
-### 14. Verify OTP
+### 15. Verify OTP
 
 **POST** `/api/bookings/{id}/verify-otp`
 
@@ -723,7 +757,7 @@ Consumer verifies the OTP when workers arrive at the site. Moves booking to in_p
 
 ---
 
-### 15. Complete Booking
+### 16. Complete Booking
 
 **PUT** `/api/bookings/{id}/complete`
 
@@ -761,7 +795,7 @@ Consumer marks the job as complete after work is done. Payment is released to th
 
 ---
 
-### 16. Cancel Booking
+### 17. Cancel Booking
 
 **PUT** `/api/bookings/{id}/cancel`
 
@@ -816,7 +850,7 @@ Cancel a booking. Only allowed from pending or accepted status.
 
 ### Thekedar Module
 - [ ] `GET /api/thekedars` - List all thekedars (with filters)
-- [ ] `GET /api/thekedars/{id}` - Get thekedar profile
+- [x] `GET /api/thekedars/{id}` - Get thekedar profile
 - [ ] `PUT /api/thekedars/profile` - Update thekedar profile (bio, skills, rate)
 
 ### Booking Module ✅ (Implemented in Section 8-16 above)

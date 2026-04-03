@@ -4,13 +4,18 @@ import com.karigarnow.dto.request.GoogleAuthRequest;
 import com.karigarnow.dto.request.LoginRequest;
 import com.karigarnow.dto.request.RegisterRequest;
 import com.karigarnow.dto.response.UserResponse;
+import com.karigarnow.model.User;
+import com.karigarnow.repository.UserRepository;
 import com.karigarnow.service.AuthService;
 import com.karigarnow.utils.ApiResponse;
+import com.karigarnow.utils.UserPrincipal;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -21,6 +26,29 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserRepository userRepository;
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<UserResponse>> me() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !(auth.getPrincipal() instanceof UserPrincipal)) {
+            return ResponseEntity.status(401).body(new ApiResponse<>(false, "Not authenticated", null));
+        }
+        UserPrincipal principal = (UserPrincipal) auth.getPrincipal();
+        User user = userRepository.findById(java.util.UUID.fromString(principal.getUserId()))
+                .orElse(null);
+        if (user == null) {
+            return ResponseEntity.status(401).body(new ApiResponse<>(false, "User not found", null));
+        }
+        UserResponse userResponse = UserResponse.builder()
+                .id(user.getId().toString())
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .photo(user.getPhoto())
+                .build();
+        return ResponseEntity.ok(new ApiResponse<>(true, "User found", userResponse));
+    }
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UserResponse>> register(

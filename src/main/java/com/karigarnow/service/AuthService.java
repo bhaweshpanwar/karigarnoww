@@ -49,6 +49,7 @@ public class AuthService {
                 .name(user.getName())
                 .email(user.getEmail())
                 .role(user.getRole())
+                .photo(user.getPhoto())
                 .build();
 
         return Map.of("token", token, "user", userResponse);
@@ -73,6 +74,7 @@ public class AuthService {
                 .name(user.getName())
                 .email(user.getEmail())
                 .role(user.getRole())
+                .photo(user.getPhoto())
                 .build();
 
         return Map.of("token", token, "user", userResponse);
