@@ -12,5 +12,7 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
 
     List<Worker> findByThekedarId(UUID thekedarId);
 
+    List<Worker> findByThekedarIdAndIsAvailableTrue(UUID thekedarId);
+
     List<Worker> findByIdIn(List<UUID> ids);
 }

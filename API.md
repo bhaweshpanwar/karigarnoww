@@ -856,10 +856,10 @@ Cancel a booking. Only allowed from pending or accepted status.
 ### Booking Module ✅ (Implemented in Section 8-16 above)
 
 ### Worker Module
-- [ ] `GET /api/workers` - List workers (thekedar's team)
-- [ ] `POST /api/workers` - Add worker to team
-- [ ] `PUT /api/workers/{id}` - Update worker
-- [ ] `DELETE /api/workers/{id}` - Remove worker
+- [x] `GET /api/workers` - List workers (thekedar's team)
+- [x] `POST /api/workers` - Add worker to team
+- [x] `PUT /api/workers/{id}` - Update worker
+- [x] `DELETE /api/workers/{id}` - Remove worker
 
 ### Review Module
 - [ ] `POST /api/reviews` - Create review (consumer)
@@ -868,6 +868,172 @@ Cancel a booking. Only allowed from pending or accepted status.
 ### Payment Module (Future)
 - [ ] `POST /api/payments/initiate` - Initiate payment
 - [ ] `GET /api/payments/{id}` - Get payment status
+
+---
+
+## Worker Module
+
+### 18. List Workers
+
+**GET** `/api/workers`
+
+Returns all workers belonging to the logged-in thekedar.
+
+**Auth:** Yes — Thekedar only
+
+**Query Parameters:**
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| available | boolean | — | Filter by `is_available = true` |
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Workers fetched",
+  "data": [
+    {
+      "id": "uuid",
+      "name": "Raju Mistri",
+      "mobile": "9876543210",
+      "skills": ["plumbing", "tiling"],
+      "daily_rate": 450.00,
+      "is_available": true,
+      "total_jobs": 12,
+      "thekedar_id": "uuid"
+    }
+  ]
+}
+```
+
+**Errors:**
+- `403` — Consumer trying to access
+
+---
+
+### 19. Add Worker
+
+**POST** `/api/workers`
+
+Add a new worker to the thekedar's team.
+
+**Auth:** Yes — Thekedar only
+
+**Request Body:**
+```json
+{
+  "name": "Raju Mistri",
+  "mobile": "9876543210",
+  "skills": ["plumbing", "tiling"],
+  "daily_rate": 450
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| name | string | Yes | Worker name (not blank) |
+| mobile | string | No | Mobile number |
+| skills | string[] | No | List of skill tags |
+| daily_rate | number | Yes | Daily wage rate (must be > 0) |
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Worker added",
+  "data": {
+    "id": "uuid",
+    "name": "Raju Mistri",
+    "mobile": "9876543210",
+    "skills": ["plumbing", "tiling"],
+    "daily_rate": 450.00,
+    "is_available": true,
+    "total_jobs": 0,
+    "thekedar_id": "uuid"
+  }
+}
+```
+
+**Errors:**
+- `400` — Validation error
+- `403` — Consumer trying to access
+
+---
+
+### 20. Update Worker
+
+**PUT** `/api/workers/{id}`
+
+Update an existing worker's details. All fields are optional — only provided fields are updated.
+
+**Auth:** Yes — Thekedar only
+
+**Path Parameters:**
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Worker ID |
+
+**Request Body:**
+```json
+{
+  "name": "Raju Mistri",
+  "mobile": "9988776655",
+  "skills": ["plumbing", "tiling", "waterproofing"],
+  "daily_rate": 500,
+  "is_available": false
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Worker updated",
+  "data": {
+    "id": "uuid",
+    "name": "Raju Mistri",
+    "mobile": "9988776655",
+    "skills": ["plumbing", "tiling", "waterproofing"],
+    "daily_rate": 500.00,
+    "is_available": false,
+    "total_jobs": 12,
+    "thekedar_id": "uuid"
+  }
+}
+```
+
+**Errors:**
+- `403` — Worker belongs to a different thekedar
+- `404` — Worker not found
+
+---
+
+### 21. Delete Worker
+
+**DELETE** `/api/workers/{id}`
+
+Remove a worker from the thekedar's team.
+
+**Auth:** Yes — Thekedar only
+
+**Path Parameters:**
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Worker ID |
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Worker removed successfully",
+  "data": null
+}
+```
+
+**Errors:**
+- `400` — Worker is assigned to an active booking
+- `403` — Worker belongs to a different thekedar
+- `404` — Worker not found
 
 ---
 
