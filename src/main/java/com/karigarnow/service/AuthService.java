@@ -4,6 +4,7 @@ import com.karigarnow.dto.request.GoogleAuthRequest;
 import com.karigarnow.dto.request.LoginRequest;
 import com.karigarnow.dto.request.RegisterRequest;
 import com.karigarnow.dto.response.AuthResponse;
+import com.karigarnow.dto.response.UserResponse;
 import com.karigarnow.exception.GoogleAuthException;
 import com.karigarnow.exception.UserAlreadyExistsException;
 import com.karigarnow.model.User;
@@ -14,6 +15,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -22,7 +25,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public AuthResponse register(RegisterRequest request) {
+    public Map<String, Object> register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new UserAlreadyExistsException("Email already registered");
         }
@@ -41,16 +44,17 @@ public class AuthService {
 
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole(), user.getId().toString());
 
-        return AuthResponse.builder()
-                .token(token)
+        UserResponse userResponse = UserResponse.builder()
                 .id(user.getId().toString())
                 .name(user.getName())
                 .email(user.getEmail())
                 .role(user.getRole())
                 .build();
+
+        return Map.of("token", token, "user", userResponse);
     }
 
-    public AuthResponse login(LoginRequest request) {
+    public Map<String, Object> login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
 
@@ -64,16 +68,17 @@ public class AuthService {
 
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole(), user.getId().toString());
 
-        return AuthResponse.builder()
-                .token(token)
+        UserResponse userResponse = UserResponse.builder()
                 .id(user.getId().toString())
                 .name(user.getName())
                 .email(user.getEmail())
                 .role(user.getRole())
                 .build();
+
+        return Map.of("token", token, "user", userResponse);
     }
 
-    public AuthResponse googleAuth(GoogleAuthRequest request) {
+    public Map<String, Object> googleAuth(GoogleAuthRequest request) {
         String googleToken = request.getGoogleToken();
 
         // Decode Google token payload (without verification for simplicity)
@@ -95,13 +100,13 @@ public class AuthService {
         return userRepository.findByAuthProviderId(googleUserId)
                 .map(user -> {
                     String token = jwtUtil.generateToken(user.getEmail(), user.getRole(), user.getId().toString());
-                    return AuthResponse.builder()
-                            .token(token)
+                    UserResponse userResponse = UserResponse.builder()
                             .id(user.getId().toString())
                             .name(user.getName())
                             .email(user.getEmail())
                             .role(user.getRole())
                             .build();
+                    return Map.<String, Object>of("token", token, "user", userResponse);
                 })
                 .orElseGet(() -> {
                     // Create new user with google auth
@@ -118,13 +123,14 @@ public class AuthService {
 
                     String token = jwtUtil.generateToken(newUser.getEmail(), newUser.getRole(), newUser.getId().toString());
 
-                    return AuthResponse.builder()
-                            .token(token)
+                    UserResponse userResponse = UserResponse.builder()
                             .id(newUser.getId().toString())
                             .name(newUser.getName())
                             .email(newUser.getEmail())
                             .role(newUser.getRole())
                             .build();
+
+                    return Map.<String, Object>of("token", token, "user", userResponse);
                 });
     }
 

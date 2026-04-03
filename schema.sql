@@ -83,7 +83,7 @@ CREATE TABLE bookings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   consumer_id UUID REFERENCES users(id) ON DELETE CASCADE,
   thekedar_id UUID REFERENCES thekedars(id),
-  service_id UUID REFERENCES services(id),
+  service_id UUID REFERENCES app_services(id),
   workers_needed INT DEFAULT 1,
   address_id UUID REFERENCES addresses(id),
   job_description TEXT,
@@ -164,3 +164,14 @@ INSERT INTO app_services (slug, name, description) VALUES
 ('carpentry', 'Carpentry', 'Doors, windows, furniture assembly, shelves'),
 ('waterproofing', 'Waterproofing', 'Terrace, bathroom, basement waterproofing'),
 ('cleaning', 'Deep Cleaning', 'Full home cleaning, sofa, carpet, kitchen');
+
+
+-- CHANGES
+--
+-- NOTE: After seeding addresses, run this to link back to users:
+-- UPDATE users u SET address_id = a.id FROM addresses a WHERE a.user_id = u.id;
+
+  -- Drop the wrong FK and point it to app_services
+  ALTER TABLE bookings DROP CONSTRAINT bookings_service_id_fkey;
+  ALTER TABLE bookings ADD CONSTRAINT bookings_service_id_fkey
+    FOREIGN KEY (service_id) REFERENCES app_services(id);

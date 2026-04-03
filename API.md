@@ -39,10 +39,11 @@ Base URL: `http://localhost:8080/api`
 
 ## Authentication
 
-All protected endpoints require:
-```
-Header: Authorization: Bearer <jwt_token>
-```
+All protected endpoints require a valid JWT cookie.
+
+**Cookie:** `jwt=<jwt_token>` (httpOnly, set automatically on login/register/google auth)
+
+**Cookie-based auth is used** — no Authorization header needed. The JWT is stored in an httpOnly cookie named `jwt`.
 
 ---
 
@@ -100,13 +101,15 @@ Register a new consumer or thekedar.
   "success": true,
   "message": "Registration successful",
   "data": {
-    "token": "eyJhbGciOiJIUzUxMiJ9...",
     "id": "1d3e4bb3-2ee5-44bd-9ecf-efdc4e5dac41",
     "name": "Rajesh Kumar",
     "email": "rajesh@example.com",
     "role": "consumer"
   }
 }
+```
+
+> Note: Registration does NOT set a JWT cookie. User must call `/api/auth/login` after registering.
 ```
 
 **Error (409 Conflict - Email exists):**
@@ -159,13 +162,15 @@ Login with email and password.
   "success": true,
   "message": "Login successful",
   "data": {
-    "token": "eyJhbGciOiJIUzUxMiJ9...",
     "id": "1d3e4bb3-2ee5-44bd-9ecf-efdc4e5dac41",
     "name": "Rajesh Kumar",
     "email": "rajesh@example.com",
     "role": "consumer"
   }
 }
+```
+
+> Note: JWT cookie is set automatically on successful login (httpOnly, 7-day expiry). No token in response body.
 ```
 
 **Error (401 Unauthorized):**
@@ -206,13 +211,15 @@ Authenticate using Google OAuth token.
   "success": true,
   "message": "Authentication successful",
   "data": {
-    "token": "eyJhbGciOiJIUzUxMiJ9...",
     "id": "2f4a5b6c-3de6-45cf-8abc-def012345678",
     "name": "Google User",
     "email": "user@gmail.com",
     "role": "consumer"
   }
 }
+```
+
+> Note: JWT cookie is set automatically on successful Google auth (httpOnly, 7-day expiry).
 ```
 
 **Error (400 Bad Request):**
@@ -791,7 +798,7 @@ Cancel a booking. Only allowed from pending or accepted status.
 ## Future Endpoints (To Be Implemented)
 
 ### Auth Module
-- [ ] `POST /api/auth/logout` - Invalidate token
+- [x] `POST /api/auth/logout` - Invalidate token (sets cookie `jwt=1; Max-Age=0`)
 - [ ] `POST /api/auth/refresh` - Refresh token
 - [ ] `POST /api/auth/forgot-password` - Send reset email
 - [ ] `POST /api/auth/reset-password` - Reset password with token
