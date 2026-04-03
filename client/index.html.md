@@ -1,3 +1,4 @@
+```bash
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1748,3 +1749,4 @@ function toast(msg, type) {
 </script>
 </body>
 </html>
+```
