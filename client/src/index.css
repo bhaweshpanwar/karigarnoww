@@ -38,7 +38,6 @@ body {
   font-size: 15px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  padding-top: 68px; /* offset for fixed navbar */
 }
 
 ::-webkit-scrollbar { width: 4px; }

@@ -12,12 +12,18 @@ const ThekedarProfile = lazy(() => import('../pages/ThekedarProfile'));
 const BookingList = lazy(() => import('../pages/BookingList'));
 const BookingDetail = lazy(() => import('../pages/BookingDetail'));
 const CreateBooking = lazy(() => import('../pages/CreateBooking'));
-const ThekedarDashboard = lazy(() => import('../pages/ThekedarDashboard'));
+const ThekedarLayout = lazy(() => import('../pages/thekedar/ThekedarLayout'));
+const Dashboard = lazy(() => import('../pages/thekedar/Dashboard'));
+const ManageJobs = lazy(() => import('../pages/thekedar/ManageJobs'));
+const JobDetail = lazy(() => import('../pages/thekedar/JobDetail'));
+const MyWorkers = lazy(() => import('../pages/thekedar/MyWorkers'));
+const Earnings = lazy(() => import('../pages/thekedar/Earnings'));
+const ThekedarProfilePage = lazy(() => import('../pages/thekedar/ThekedarProfile'));
 
 function FullPageSpinner() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-white">
-      <div className="w-10 h-10 border-4 border-[#FF6B00] border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-[#D44B0A] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 }
@@ -49,7 +55,27 @@ function ThekedarRoute({ children }) {
   return children;
 }
 
-export default function AppRoutes() {
+function ThekedarShell() {
+  return (
+    <ThekedarRoute>
+      <ThekedarLayout>
+        <Suspense fallback={<FullPageSpinner />}>
+          <Routes>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="jobs" element={<ManageJobs />} />
+            <Route path="jobs/:id" element={<JobDetail />} />
+            <Route path="workers" element={<MyWorkers />} />
+            <Route path="earnings" element={<Earnings />} />
+            <Route path="profile" element={<ThekedarProfilePage />} />
+            <Route path="*" element={<Navigate to="dashboard" replace />} />
+          </Routes>
+        </Suspense>
+      </ThekedarLayout>
+    </ThekedarRoute>
+  );
+}
+
+function PublicRoutes() {
   return (
     <>
       <Navbar />
@@ -89,19 +115,18 @@ export default function AppRoutes() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/thekedar/dashboard"
-            element={
-              <ProtectedRoute>
-                <ThekedarRoute>
-                  <ThekedarDashboard />
-                </ThekedarRoute>
-              </ProtectedRoute>
-            }
-          />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
     </>
+  );
+}
+
+export default function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/thekedar/*" element={<ThekedarShell />} />
+      <Route path="*" element={<PublicRoutes />} />
+    </Routes>
   );
 }
