@@ -73,11 +73,12 @@ export default function CreateBooking() {
     try {
       const scheduledAt = `${form.scheduled_date}T${form.scheduled_time}:00`;
       const payload = {
-        thekedar_id: thekedarId,
-        service_id: form.service_id,
-        workers_needed: form.workers_needed,
-        job_description: form.job_description,
-        scheduled_at: scheduledAt,
+        thekedarId: thekedarId,
+        serviceId: form.service_id,
+        workersNeeded: form.workers_needed,
+        jobDescription: form.job_description,
+        scheduledAt: scheduledAt,
+        addressId: '00000000-0000-0000-0000-000000000000',
       };
       const res = await api.post('/bookings', payload);
       if (res.data.success) {

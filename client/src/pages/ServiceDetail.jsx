@@ -203,7 +203,7 @@ export default function ServiceDetail() {
                           View Profile
                         </button>
                         <button onClick={() => handleBook(t.id)}
-                          className="flex-1 py-2 rounded-lg bg-[#FF6B00] text-white text-xs font-bold hover:bg-[#D44B0A] transition-colors">
+                          className="flex-1 py-2 rounded-lg bg-ink text-white text-xs font-bold hover:bg-accent transition-colors">
                           Book Now
                         </button>
                       </div>
