@@ -1,24 +1,16 @@
 -- =====================================================
 -- KarigarNow Database Schema
+-- PostgreSQL 14+
 -- =====================================================
 
--- extensions
+-- Enable pgcrypto extension for UUID generation
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- ADDRESSES FIRST (no dependencies)
-CREATE TABLE addresses (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  address_line1 TEXT,
-  address_line2 TEXT,
-  city TEXT,
-  state TEXT,
-  country TEXT,
-  postal_code TEXT,
-  is_primary BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT NOW()
-);
+-- =====================================================
+-- CORE TABLES (No dependencies)
+-- =====================================================
 
--- USERS SECOND (no address_id yet)
+-- USERS (base table for all user types)
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
@@ -36,21 +28,35 @@ CREATE TABLE users (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- NOW add foreign keys both ways
-ALTER TABLE addresses ADD COLUMN user_id UUID REFERENCES users(id) ON DELETE CASCADE;
-ALTER TABLE users ADD COLUMN address_id UUID REFERENCES addresses(id);
-
--- SERVICES
-CREATE TABLE services (
+-- APP_SERVICES (platform service categories - maintained by admin)
+CREATE TABLE app_services (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug TEXT UNIQUE NOT NULL,
   name TEXT NOT NULL,
   description TEXT,
-  icon TEXT,
-  base_price DECIMAL(10,2),
+  is_active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- THEKEDARS
+-- ADDRESSES (user addresses)
+CREATE TABLE addresses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  address_line1 TEXT,
+  address_line2 TEXT,
+  city TEXT,
+  state TEXT,
+  country TEXT,
+  postal_code TEXT,
+  is_primary BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- =====================================================
+-- THEKEDAR & WORKER TABLES
+-- =====================================================
+
+-- THEKEDARS (contractor profiles)
 CREATE TABLE thekedars (
   id UUID PRIMARY KEY REFERENCES users(id),
   bio TEXT,
@@ -65,7 +71,7 @@ CREATE TABLE thekedars (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- WORKERS
+-- WORKERS (workers under each thekedar)
 CREATE TABLE workers (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   thekedar_id UUID REFERENCES thekedars(id) ON DELETE CASCADE,
@@ -78,7 +84,20 @@ CREATE TABLE workers (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- BOOKINGS
+-- THEKEDAR_SERVICES (services offered by each thekedar with custom rates)
+CREATE TABLE thekedar_services (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  thekedar_id UUID REFERENCES thekedars(id) ON DELETE CASCADE,
+  service_id UUID REFERENCES app_services(id) ON DELETE CASCADE,
+  custom_rate DECIMAL(10,2),
+  UNIQUE(thekedar_id, service_id)
+);
+
+-- =====================================================
+-- BOOKING & RELATED TABLES
+-- =====================================================
+
+-- BOOKINGS (service bookings)
 CREATE TABLE bookings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   consumer_id UUID REFERENCES users(id) ON DELETE CASCADE,
@@ -104,7 +123,7 @@ CREATE TABLE bookings (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
--- BOOKING WORKERS
+-- BOOKING_WORKERS (workers assigned to a booking)
 CREATE TABLE booking_workers (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   booking_id UUID REFERENCES bookings(id) ON DELETE CASCADE,
@@ -112,7 +131,7 @@ CREATE TABLE booking_workers (
   assigned_at TIMESTAMP DEFAULT NOW()
 );
 
--- REVIEWS
+-- REVIEWS (consumer ratings for thekedars)
 CREATE TABLE reviews (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   booking_id UUID REFERENCES bookings(id) ON DELETE CASCADE,
@@ -123,7 +142,7 @@ CREATE TABLE reviews (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- EARNINGS
+-- EARNINGS (payout records for thekedars)
 CREATE TABLE earnings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   thekedar_id UUID REFERENCES thekedars(id) ON DELETE CASCADE,
@@ -134,27 +153,11 @@ CREATE TABLE earnings (
   paid_at TIMESTAMP DEFAULT NOW()
 );
 
--- APP SERVICES (maintained by us)
-CREATE TABLE app_services (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  slug TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
-  description TEXT,
-  is_active BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT NOW()
-);
+-- =====================================================
+-- SEED DATA
+-- =====================================================
 
--- THEKEDAR SERVICES (services offered by thekedars)
-CREATE TABLE thekedar_services (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  thekedar_id UUID REFERENCES thekedars(id) ON DELETE CASCADE,
-  service_id UUID REFERENCES app_services(id) ON DELETE CASCADE,
-  custom_rate DECIMAL(10,2),
-  UNIQUE(thekedar_id, service_id)
-);
-
-
---RAW DATA FOR SERVICES
+-- Default app services (platform service categories)
 INSERT INTO app_services (slug, name, description) VALUES
 ('plumbing', 'Plumbing', 'Pipe fitting, leakage repair, tap, drain cleaning'),
 ('painting', 'Wall Painting', 'Interior, exterior, texture, waterproofing coats'),
@@ -164,14 +167,3 @@ INSERT INTO app_services (slug, name, description) VALUES
 ('carpentry', 'Carpentry', 'Doors, windows, furniture assembly, shelves'),
 ('waterproofing', 'Waterproofing', 'Terrace, bathroom, basement waterproofing'),
 ('cleaning', 'Deep Cleaning', 'Full home cleaning, sofa, carpet, kitchen');
-
-
--- CHANGES
---
--- NOTE: After seeding addresses, run this to link back to users:
--- UPDATE users u SET address_id = a.id FROM addresses a WHERE a.user_id = u.id;
-
-  -- Drop the wrong FK and point it to app_services
-  ALTER TABLE bookings DROP CONSTRAINT bookings_service_id_fkey;
-  ALTER TABLE bookings ADD CONSTRAINT bookings_service_id_fkey
-    FOREIGN KEY (service_id) REFERENCES app_services(id);
