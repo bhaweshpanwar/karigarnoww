@@ -201,7 +201,7 @@ export default function JobDetail() {
               <p className="text-lg font-black" style={{ color: '#0E0D0C' }}>{formatCurrency(booking.total_amount)}</p>
             </div>
             <div>
-              <p className="text-xs mb-1" style={{ color: '#6B6560' }}>Platform Fee</p>
+              <p className="text-xs mb-1" style={{ color: '#6B6560' }}>Service Charge</p>
               <p className="text-lg font-black" style={{ color: '#A89E97' }}>{formatCurrency(booking.platform_fee)}</p>
             </div>
             <div>

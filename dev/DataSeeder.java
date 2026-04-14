@@ -16,8 +16,8 @@ import java.util.regex.*;
  *
  * Usage:
  *   java dev.DataSeeder --import     seeds all data
- *   java dev.DataSeeder --delete     clears all seeded data
- *   java dev.DataSeeder --reimport   delete then import fresh
+ *   java dev.DataSeeder --clean      clears all seeded data
+ *   java dev.DataSeeder --reimport   clean then import fresh
  *
  * Compile with:
  *   javac -encoding UTF-8 -cp "lib/*;src/main/resources" dev/DataSeeder.java
@@ -30,7 +30,6 @@ public class DataSeeder {
     private static final Path DATA_DIR;
 
     static {
-        // Resolve dev/data relative to where the project root is (one level up from dev/)
         Path devDir = Paths.get("dev");
         DATA_DIR = devDir.resolve("data");
     }
@@ -61,12 +60,11 @@ public class DataSeeder {
         }
 
         String action = args[0];
-        if (!action.equals("--import") && !action.equals("--delete") && !action.equals("--reimport")) {
+        if (!action.equals("--import") && !action.equals("--clean") && !action.equals("--reimport")) {
             printUsage();
             System.exit(1);
         }
 
-        // Load DB config from application.properties
         Properties props = loadAppProperties();
         String dbUrl = props.getProperty("spring.datasource.url");
         String dbUser = props.getProperty("spring.datasource.username");
@@ -81,18 +79,18 @@ public class DataSeeder {
 
         try {
             if (action.equals("--reimport")) {
-                System.out.println("=== Reimporting data (delete + import) ===");
+                System.out.println("=== Reimporting data (clean + import) ===");
                 seeder.connect();
-                seeder.deleteAll();
+                seeder.cleanDatabase();
                 seeder.importAll();
                 seeder.disconnect();
             } else if (action.equals("--import")) {
                 seeder.connect();
                 seeder.importAll();
                 seeder.disconnect();
-            } else if (action.equals("--delete")) {
+            } else if (action.equals("--clean")) {
                 seeder.connect();
-                seeder.deleteAll();
+                seeder.cleanDatabase();
                 seeder.disconnect();
             }
         } catch (Exception e) {
@@ -105,7 +103,7 @@ public class DataSeeder {
     private static void printUsage() {
         System.out.println("Usage: java dev.DataSeeder <flag>");
         System.out.println("  --import     Seed all data into the database");
-        System.out.println("  --delete     Delete all seeded data from the database");
+        System.out.println("  --clean      Delete all seeded data from the database");
         System.out.println("  --reimport   Delete then re-import all data");
     }
 
@@ -147,52 +145,23 @@ public class DataSeeder {
     // -------------------------------------------------------------------------
 
     private void importAll() throws Exception {
-        importAppServices();
         importUsers();
         importAddresses();
+        linkAddressesToUsers();
         importThekedars();
         importThekedarServices();
         importWorkers();
+        importBookings();
+        importBookingWorkers();
+        importEarnings();
         importReviews();
         conn.commit();
         System.out.println("\n=== All data seeded successfully! ===");
     }
 
-    private void importAppServices() throws Exception {
-        JsonNode data = readJson("app_services.json");
-        int count = 0;
-
-        // Check if already seeded
-        long existing = countRows("app_services");
-        if (existing > 0) {
-            System.out.println("app_services already has " + existing + " rows — skipping.");
-            return;
-        }
-
-        String sql = """
-            INSERT INTO app_services (slug, name, description, is_active)
-            VALUES (?, ?, ?, ?)
-            """;
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            for (JsonNode node : data) {
-                ps.setString(1, node.get("slug").asText());
-                ps.setString(2, node.get("name").asText());
-                ps.setString(3, node.has("description") ? node.get("description").asText() : null);
-                ps.setBoolean(4, node.has("is_active") ? node.get("is_active").asBoolean() : true);
-                ps.addBatch();
-                count++;
-            }
-            ps.executeBatch();
-        }
-
-        System.out.println("Inserted " + count + " app_services.");
-    }
-
     private void importUsers() throws Exception {
         JsonNode data = readJson("users.json");
 
-        // Split into consumers and thekedars
         List<JsonNode> consumers = new ArrayList<>();
         List<JsonNode> thekedars = new ArrayList<>();
 
@@ -204,11 +173,12 @@ public class DataSeeder {
             }
         }
 
-        insertUsers(consumers, "consumers");
-        insertUsers(thekedars, "thekedars");
+        int consumerCount = insertUsers(consumers, "consumer");
+        int thekedarCount = insertUsers(thekedars, "thekedar");
+        System.out.println("✓ Users inserted (" + consumerCount + " consumers, " + thekedarCount + " thekedars)");
     }
 
-    private void insertUsers(List<JsonNode> users, String label) throws Exception {
+    private int insertUsers(List<JsonNode> users, String role) throws Exception {
         String sql = """
             INSERT INTO users (name, email, mobile, password, role, active)
             VALUES (?, ?, ?, ?, ?, ?)
@@ -231,7 +201,7 @@ public class DataSeeder {
             ps.executeBatch();
         }
 
-        System.out.println("Inserted " + count + " " + label + ".");
+        return count;
     }
 
     private void importAddresses() throws Exception {
@@ -239,28 +209,40 @@ public class DataSeeder {
         int count = 0;
 
         String sql = """
-            INSERT INTO addresses (user_id, address_line1, city, state, postal_code, country, is_primary)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO addresses (user_id, address_line1, address_line2, city, state, postal_code, country, is_primary)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (JsonNode node : data) {
-                UUID userId = getUserIdByEmail(node.get("consumer_email").asText());
+                UUID userId = getUserIdByEmail(node.get("userEmail").asText());
 
                 ps.setObject(1, userId);
                 ps.setString(2, node.get("address_line1").asText());
-                ps.setString(3, node.get("city").asText());
-                ps.setString(4, node.get("state").asText());
-                ps.setString(5, node.get("postal_code").asText());
-                ps.setString(6, node.has("country") ? node.get("country").asText() : "India");
-                ps.setBoolean(7, node.has("is_primary") ? node.get("is_primary").asBoolean() : false);
+                ps.setString(3, node.has("address_line2") ? node.get("address_line2").asText() : null);
+                ps.setString(4, node.get("city").asText());
+                ps.setString(5, node.get("state").asText());
+                ps.setString(6, node.get("postal_code").asText());
+                ps.setString(7, node.has("country") ? node.get("country").asText() : "India");
+                ps.setBoolean(8, node.has("is_primary") ? node.get("is_primary").asBoolean() : false);
                 ps.addBatch();
                 count++;
             }
             ps.executeBatch();
         }
 
-        System.out.println("Inserted " + count + " addresses.");
+        System.out.println("✓ Addresses inserted (" + count + " records)");
+    }
+
+    private void linkAddressesToUsers() throws SQLException {
+        String sql = """
+            UPDATE users u SET address_id = a.id
+            FROM addresses a WHERE a.user_id = u.id
+            """;
+        try (Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(sql);
+        }
+        System.out.println("✓ Addresses linked to users");
     }
 
     private void importThekedars() throws Exception {
@@ -274,7 +256,7 @@ public class DataSeeder {
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (JsonNode node : data) {
-                UUID userId = getUserIdByEmail(node.get("user_email").asText());
+                UUID userId = getUserIdByEmail(node.get("userEmail").asText());
 
                 ps.setObject(1, userId);
                 ps.setString(2, node.has("bio") ? node.get("bio").asText() : null);
@@ -291,7 +273,7 @@ public class DataSeeder {
             ps.executeBatch();
         }
 
-        System.out.println("Inserted " + count + " thekedar profiles.");
+        System.out.println("✓ Thekedars inserted (" + count + " records)");
     }
 
     private void importThekedarServices() throws Exception {
@@ -306,8 +288,8 @@ public class DataSeeder {
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (JsonNode node : data) {
-                UUID thekedarId = getUserIdByEmail(node.get("thekedar_email").asText());
-                UUID serviceId = getServiceIdBySlug(node.get("service_slug").asText());
+                UUID thekedarId = getUserIdByEmail(node.get("thekedarEmail").asText());
+                UUID serviceId = getServiceIdBySlug(node.get("serviceSlug").asText());
 
                 ps.setObject(1, thekedarId);
                 ps.setObject(2, serviceId);
@@ -318,7 +300,7 @@ public class DataSeeder {
             ps.executeBatch();
         }
 
-        System.out.println("Inserted " + count + " thekedar_services entries.");
+        System.out.println("✓ Thekedar services inserted (" + count + " records)");
     }
 
     private void importWorkers() throws Exception {
@@ -332,13 +314,12 @@ public class DataSeeder {
         int totalCount = 0;
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (JsonNode node : data) {
-                UUID thekedarId = getUserIdByEmail(node.get("thekedar_email").asText());
+                UUID thekedarId = getUserIdByEmail(node.get("thekedarEmail").asText());
 
                 ps.setObject(1, thekedarId);
                 ps.setString(2, node.get("name").asText());
                 ps.setString(3, node.get("mobile").asText());
 
-                // Store skills as PostgreSQL TEXT[] e.g. {"plumbing","tiling"}
                 StringBuilder skillsBuilder = new StringBuilder("{");
                 JsonNode skillsNode = node.get("skills");
                 for (int i = 0; i < skillsNode.size(); i++) {
@@ -356,7 +337,122 @@ public class DataSeeder {
             ps.executeBatch();
         }
 
-        System.out.println("Inserted " + totalCount + " workers.");
+        System.out.println("✓ Workers inserted (" + totalCount + " total)");
+    }
+
+    private void importBookings() throws Exception {
+        JsonNode data = readJson("bookings.json");
+        int count = 0;
+
+        String sql = """
+            INSERT INTO bookings (consumer_id, thekedar_id, service_id, workers_needed, address_id, scheduled_at, total_amount, platform_fee, thekedar_payout, otp, otp_verified, booking_status, payment_status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            for (JsonNode node : data) {
+                UUID consumerId = getUserIdByEmail(node.get("consumerEmail").asText());
+                UUID thekedarId = getUserIdByEmail(node.get("thekedarEmail").asText());
+                UUID serviceId = getServiceIdBySlug(node.get("serviceSlug").asText());
+                UUID addressId = getAddressIdByEmail(node.get("consumerEmail").asText());
+
+                ps.setObject(1, consumerId);
+                ps.setObject(2, thekedarId);
+                ps.setObject(3, serviceId);
+                ps.setInt(4, node.get("workers_needed").asInt());
+                ps.setObject(5, addressId);
+
+                if (node.has("scheduled_at") && !node.get("scheduled_at").isNull()) {
+                    ps.setTimestamp(6, Timestamp.valueOf(node.get("scheduled_at").asText().replace("T", " ")));
+                } else {
+                    ps.setNull(6, Types.TIMESTAMP);
+                }
+
+                ps.setBigDecimal(7, new java.math.BigDecimal(node.get("total_amount").asText()));
+                ps.setBigDecimal(8, new java.math.BigDecimal(node.get("platform_fee").asText()));
+                ps.setBigDecimal(9, new java.math.BigDecimal(node.get("thekedar_payout").asText()));
+
+                if (node.has("otp") && !node.get("otp").isNull()) {
+                    ps.setString(10, node.get("otp").asText());
+                } else {
+                    ps.setNull(10, Types.VARCHAR);
+                }
+
+                ps.setBoolean(11, node.has("otp_verified") && node.get("otp_verified").asBoolean());
+                ps.setString(12, node.get("booking_status").asText());
+                ps.setString(13, node.get("payment_status").asText());
+                ps.addBatch();
+                count++;
+            }
+            ps.executeBatch();
+        }
+
+        System.out.println("✓ Bookings inserted (" + count + " total)");
+    }
+
+    private void importBookingWorkers() throws Exception {
+        JsonNode data = readJson("booking_workers.json");
+        int count = 0;
+
+        String sql = """
+            INSERT INTO booking_workers (booking_id, worker_id, assigned_at)
+            VALUES (?, ?, ?)
+            """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            for (JsonNode node : data) {
+                String bookingRef = node.get("bookingRef").asText();
+                String workerMobile = node.get("workerMobile").asText();
+
+                UUID bookingId = getBookingIdByRef(bookingRef);
+                UUID workerId = getWorkerIdByMobile(workerMobile);
+
+                ps.setObject(1, bookingId);
+                ps.setObject(2, workerId);
+                ps.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+                ps.addBatch();
+                count++;
+            }
+            ps.executeBatch();
+        }
+
+        System.out.println("✓ Booking workers inserted (" + count + " records)");
+    }
+
+    private void importEarnings() throws Exception {
+        JsonNode data = readJson("earnings.json");
+        int count = 0;
+
+        String sql = """
+            INSERT INTO earnings (thekedar_id, booking_id, amount, platform_fee, net_amount, paid_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            for (JsonNode node : data) {
+                UUID thekedarId = getUserIdByEmail(node.get("thekedarEmail").asText());
+                String bookingRef = node.get("bookingRef").asText();
+                UUID bookingId = getBookingIdByRef(bookingRef);
+
+                ps.setObject(1, thekedarId);
+                ps.setObject(2, bookingId);
+                ps.setBigDecimal(3, new java.math.BigDecimal(node.get("amount").asText()));
+                ps.setBigDecimal(4, new java.math.BigDecimal(node.get("platform_fee").asText()));
+                ps.setBigDecimal(5, new java.math.BigDecimal(node.get("net_amount").asText()));
+
+                if (node.has("paid_at") && !node.get("paid_at").isNull()) {
+                    ps.setTimestamp(6, Timestamp.valueOf(node.get("paid_at").asText().replace("T", " ")));
+                } else {
+                    ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
+                }
+
+                ps.addBatch();
+                count++;
+            }
+            ps.executeBatch();
+        }
+
+        System.out.println("✓ Earnings inserted (" + count + " records)");
     }
 
     private void importReviews() throws Exception {
@@ -364,60 +460,52 @@ public class DataSeeder {
         int count = 0;
 
         String sql = """
-            INSERT INTO reviews (consumer_id, thekedar_id, rating, comment)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO reviews (booking_id, consumer_id, thekedar_id, rating, comment)
+            VALUES (?, ?, ?, ?, ?)
             """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (JsonNode node : data) {
-                UUID consumerId = getUserIdByEmail(node.get("consumer_email").asText());
-                UUID thekedarId = getUserIdByEmail(node.get("thekedar_email").asText());
+                String bookingRef = node.get("bookingRef").asText();
+                UUID bookingId = getBookingIdByRef(bookingRef);
+                UUID consumerId = getUserIdByEmail(node.get("consumerEmail").asText());
+                UUID thekedarId = getUserIdByEmail(node.get("thekedarEmail").asText());
 
-                ps.setObject(1, consumerId);
-                ps.setObject(2, thekedarId);
-                ps.setInt(3, node.get("rating").asInt());
-                ps.setString(4, node.get("comment").asText());
+                ps.setObject(1, bookingId);
+                ps.setObject(2, consumerId);
+                ps.setObject(3, thekedarId);
+                ps.setInt(4, node.get("rating").asInt());
+                ps.setString(5, node.get("comment").asText());
                 ps.addBatch();
                 count++;
             }
             ps.executeBatch();
         }
 
-        System.out.println("Inserted " + count + " reviews.");
+        System.out.println("✓ Reviews inserted (" + count + " records)");
     }
 
     // -------------------------------------------------------------------------
-    // Delete
+    // Clean Database
     // -------------------------------------------------------------------------
 
-    private void deleteAll() throws SQLException {
-        // Delete in reverse FK order
-        System.out.println("Deleting all seeded data...");
+    private void cleanDatabase() throws SQLException {
+        System.out.println("Cleaning database...");
 
+        executeDelete("DELETE FROM earnings");
         executeDelete("DELETE FROM reviews");
-        System.out.println("  Deleted reviews.");
-
         executeDelete("DELETE FROM booking_workers");
-        System.out.println("  Deleted booking_workers.");
-
-        executeDelete("DELETE FROM workers");
-        System.out.println("  Deleted workers.");
-
+        executeDelete("DELETE FROM bookings");
         executeDelete("DELETE FROM thekedar_services");
-        System.out.println("  Deleted thekedar_services.");
-
+        executeDelete("DELETE FROM workers");
         executeDelete("DELETE FROM thekedars");
-        System.out.println("  Deleted thekedars.");
-
+        // Clear address_id FK before deleting addresses (users -> addresses via address_id)
+        executeDelete("UPDATE users SET address_id = NULL");
         executeDelete("DELETE FROM addresses");
-        System.out.println("  Deleted addresses.");
-
-        // Don't delete users as it may break other data — just truncate if needed
-        // Keeping users for auth integrity. If you want to nuke everything:
-        // executeDelete("DELETE FROM users");
+        executeDelete("DELETE FROM users WHERE role IN ('consumer','thekedar')");
 
         conn.commit();
-        System.out.println("All data cleared.");
+        System.out.println("Database cleaned.");
     }
 
     private void executeDelete(String sql) throws SQLException {
@@ -464,6 +552,64 @@ public class DataSeeder {
         throw new SQLException("Service not found for slug: " + slug);
     }
 
+    private UUID getAddressIdByEmail(String email) throws SQLException {
+        String sql = "SELECT id FROM addresses WHERE user_id = (SELECT id FROM users WHERE email = ?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getObject("id", UUID.class);
+                }
+            }
+        }
+        throw new SQLException("Address not found for email: " + email);
+    }
+
+    private UUID getBookingIdByRef(String bookingRef) throws SQLException {
+        String sql = """
+            SELECT b.id FROM bookings b
+            JOIN users u ON b.consumer_id = u.id
+            JOIN app_services s ON b.service_id = s.id
+            WHERE u.email = ? AND s.slug = ?
+            ORDER BY b.created_at DESC
+            LIMIT 1
+            """;
+
+        String[] parts = bookingRef.split("-");
+        String email = parts[0] + "." + parts[1] + "@gmail.com";
+        // Date is at indices 2,3,4 (year-month-day), slug starts at index 5
+        StringBuilder slugBuilder = new StringBuilder();
+        for (int i = 5; i < parts.length; i++) {
+            if (i > 5) slugBuilder.append("-");
+            slugBuilder.append(parts[i]);
+        }
+        String slug = slugBuilder.toString();
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ps.setString(2, slug);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getObject("id", UUID.class);
+                }
+            }
+        }
+        throw new SQLException("Booking not found for ref: " + bookingRef);
+    }
+
+    private UUID getWorkerIdByMobile(String mobile) throws SQLException {
+        String sql = "SELECT id FROM workers WHERE mobile = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, mobile);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getObject("id", UUID.class);
+                }
+            }
+        }
+        throw new SQLException("Worker not found for mobile: " + mobile);
+    }
+
     private long countRows(String table) throws SQLException {
         String sql = "SELECT COUNT(*) FROM " + table;
         try (Statement stmt = conn.createStatement();
@@ -473,4 +619,5 @@ public class DataSeeder {
             }
         }
         return 0;
-    }}
+    }
+}

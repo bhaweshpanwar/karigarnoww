@@ -225,7 +225,7 @@ export default function BookingDetail() {
                   <span className="text-[#0E0D0C]">{formatCurrency(booking.total_amount)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#6B6560]">Platform Fee</span>
+                  <span className="text-[#6B6560]">Service Charge</span>
                   <span className="text-[#0E0D0C]">{formatCurrency(booking.platform_fee)}</span>
                 </div>
                 <div className="flex justify-between font-bold border-t border-[#EDE9E4] pt-1.5">

@@ -127,7 +127,7 @@ export default function Earnings() {
           <table className="w-full">
             <thead>
               <tr className="border-b" style={{ borderColor: '#EDE9E4' }}>
-                {['Date', 'Service', 'Consumer', 'Workers', 'Total', 'Fee', 'Your Payout'].map(h => (
+                {['Date', 'Service', 'Consumer', 'Workers', 'Total', 'Service Charge', 'Your Payout'].map(h => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider" style={{ color: '#A89E97' }}>
                     {h}
                   </th>

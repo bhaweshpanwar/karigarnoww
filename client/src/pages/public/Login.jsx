@@ -76,7 +76,7 @@ export default function Login() {
             className="font-display font-black leading-[0.97] tracking-[-3px] text-white"
             style={{ fontSize: 'clamp(40px, 5vw, 68px)' }}
           >
-            Welcome back.<br />
+            Welcome<br />
             <em className="not-italic" style={{ color: '#FF6B2B' }}>back.</em>
           </h1>
           <p className="font-display italic text-[16px] mt-6 max-w-[320px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>

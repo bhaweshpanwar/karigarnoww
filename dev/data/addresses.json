@@ -1,17 +1,32 @@
 [
-  {"consumer_email": "amit.sharma@email.com", "address_line1": "42, Sushil Nagar, Near Palasia Square", "city": "Indore", "state": "Madhya Pradesh", "postal_code": "452001", "is_primary": true},
-  {"consumer_email": "priya.verma@email.com", "address_line1": "15, Malviya Nagar, Opposite DB Mall", "city": "Bhopal", "state": "Madhya Pradesh", "postal_code": "462003", "is_primary": true},
-  {"consumer_email": "rahul.gupta@email.com", "address_line1": "8, Napier Town, Near Jabalpur Junction", "city": "Jabalpur", "state": "Madhya Pradesh", "postal_code": "482001", "is_primary": true},
-  {"consumer_email": "sneha.patel@email.com", "address_line1": "23, Freeganj Road, Near Tower Chouraha", "city": "Ujjain", "state": "Madhya Pradesh", "postal_code": "456001", "is_primary": true},
-  {"consumer_email": "vikram.singh@email.com", "address_line1": "67, Lashkar Road, Morar Colony", "city": "Gwalior", "state": "Madhya Pradesh", "postal_code": "474001", "is_primary": true},
-  {"consumer_email": "anjali.mishra@email.com", "address_line1": "3rd Floor, 301, Scheme No 54, Vijay Nagar", "city": "Indore", "state": "Madhya Pradesh", "postal_code": "452010", "is_primary": true},
-  {"consumer_email": "karan.malhotra@email.com", "address_line1": "Flat 204, Shakti Khand 2, Indrapuram", "city": "Bhopal", "state": "Madhya Pradesh", "postal_code": "462001", "is_primary": true},
-  {"consumer_email": "neha.choudhary@email.com", "address_line1": "HIG 12, Sharda Nagar, Near Mathura Chowk", "city": "Jabalpur", "state": "Madhya Pradesh", "postal_code": "482002", "is_primary": true},
-  {"consumer_email": "rohit.yadav@email.com", "address_line1": "Plot 45, Industrial Area, Dewas Road", "city": "Ujjain", "state": "Madhya Pradesh", "postal_code": "456010", "is_primary": true},
-  {"consumer_email": "pooja.rawat@email.com", "address_line1": "House 12, Shinde Ki Chhawani, Naka", "city": "Gwalior", "state": "Madhya Pradesh", "postal_code": "474002", "is_primary": true},
-  {"consumer_email": "sanjay.jain@email.com", "address_line1": "Shop 5, Baba Colony, Tulsi Nagar", "city": "Indore", "state": "Madhya Pradesh", "postal_code": "452002", "is_primary": true},
-  {"consumer_email": "meera.thakur@email.com", "address_line1": "Lane 6, Kolar Road, Chunabhatti", "city": "Bhopal", "state": "Madhya Pradesh", "postal_code": "462016", "is_primary": true},
-  {"consumer_email": "ajay.saxena@email.com", "address_line1": "22, Civil Lines, Near GTB College", "city": "Jabalpur", "state": "Madhya Pradesh", "postal_code": "482003", "is_primary": true},
-  {"consumer_email": "kavita.desai@email.com", "address_line1": "34, Madhav Nagar, Near Bus Stand", "city": "Ujjain", "state": "Madhya Pradesh", "postal_code": "456002", "is_primary": true},
-  {"consumer_email": "deepak.rajput@email.com", "address_line1": "Ward 8, Loha Bazar, Mandu Road", "city": "Gwalior", "state": "Madhya Pradesh", "postal_code": "474003", "is_primary": true}
+  {
+    "userEmail": "kavita.sharma@gmail.com",
+    "address_line1": "42, Palasia Square, Near C21 Mall",
+    "address_line2": "Scheme 54",
+    "city": "Indore",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "postal_code": "452001",
+    "is_primary": true
+  },
+  {
+    "userEmail": "rohit.verma@gmail.com",
+    "address_line1": "15, Malviya Nagar, Near DB Mall",
+    "address_line2": "Zone 2",
+    "city": "Bhopal",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "postal_code": "462003",
+    "is_primary": true
+  },
+  {
+    "userEmail": "priya.malhotra@gmail.com",
+    "address_line1": "34, Madhav Nagar, Near Bus Stand",
+    "address_line2": "",
+    "city": "Ujjain",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "postal_code": "456002",
+    "is_primary": true
+  }
 ]

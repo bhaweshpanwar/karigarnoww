@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KarigarNow — Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────
+   TOKENS (Matching your index.html)
+───────────────────────────────────────── */
+:root {
+  --ink:      #0E0D0C;
+  --mid:      #6B6560;
+  --muted:    #A89E97;
+  --rule:     #DDD8D2;
+  --bg:       #FDFCFA;
+  --white:    #FFFFFF;
+  --accent:   #D44B0A;
+  --accent2:  #FF6B2B;
+  --ap:       #FDF0E8;
+  --r:        8px;
+  --r3:       20px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Instrument Sans', sans-serif;
+  overflow: hidden; /* Presentation mode */
+}
+
+.f-disp { font-family: 'Fraunces', serif; }
+
+/* ─────────────────────────────────────────
+   SLIDE SYSTEM
+───────────────────────────────────────── */
+.slide {
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  padding: 60px;
+  position: relative;
+  border: 10px solid var(--ink);
+}
+
+.slide.active { display: grid; animation: slideIn 0.5s ease-out; }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────
+   COMPONENTS
+───────────────────────────────────────── */
+.slide-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 20px;
+  margin-bottom: 40px;
+}
+
+.slide-num { font-family: 'Fraunces', serif; font-weight: 900; color: var(--accent); font-size: 24px; }
+.brand { font-family: 'Fraunces', serif; font-weight: 900; font-size: 24px; }
+.brand span { color: var(--accent); }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+.gray-block {
+  background: var(--rule);
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mid);
+  font-weight: 600;
+  border: 1.5px dashed var(--muted);
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+  display: block;
+}
+
+.title-xl {
+  font-family: 'Fraunces', serif;
+  font-size: 80px;
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -3px;
+}
+
+.title-lg {
+  font-family: 'Fraunces', serif;
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  margin-bottom: 20px;
+}
+
+.italic-accent { font-style: italic; color: var(--accent); }
+
+/* ─────────────────────────────────────────
+   SPECIFIC SLIDE STYLES
+───────────────────────────────────────── */
+
+/* Agenda Grid */
+.agenda-item {
+  border: 2px solid var(--ink);
+  padding: 30px;
+  transition: background 0.3s;
+}
+.agenda-item:hover { background: var(--ap); }
+
+/* Process Steps */
+.step-num { font-family: 'Fraunces', serif; font-size: 60px; font-weight: 900; color: var(--rule); line-height: 1; }
+
+/* Navigation Buttons (for non-keyboard users) */
+.nav-btns {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  gap: 10px;
+  z-index: 1000;
+}
+.btn {
+  padding: 10px 20px;
+  background: var(--ink);
+  color: white;
+  border: none;
+  font-family: 'Instrument Sans';
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.btn:hover { background: var(--accent); }
+
+</style>
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <div class="nav-btns">
+    <button class="btn" onclick="prevSlide()">← Prev</button>
+    <button class="btn" onclick="nextSlide()">Next →</button>
+  </div>
+
+  <!-- SLIDE 1: TITLE -->
+  <div class="slide active" style="grid-template-rows: auto 1fr auto;">
+    <div class="slide-header">
+      <div class="brand">Karigar<span>Now</span></div>
+      <div class="f-disp" style="font-weight: 700;">SGSITS Indore · MCA 2026</div>
+    </div>
+    <div style="align-self: center;">
+      <span class="label">Major Project Presentation</span>
+      <h1 class="title-xl">Connecting <br><span class="italic-accent">Workers</span> with Work.</h1>
+    </div>
+    <div class="grid-3" style="border-top: 2px solid var(--ink); padding-top: 20px;">
+      <div>
+        <span class="label">Presented By</span>
+        <p style="font-weight: 700; font-size: 14px;">Aakanksha, Bhawesh, Kasak, Mishika</p>
+      </div>
+      <div>
+        <span class="label">Project Guide</span>
+        <p style="font-weight: 700; font-size: 14px;">Dr. Sunita Verma</p>
+      </div>
+      <div style="text-align: right;">
+        <span class="label">Department</span>
+        <p style="font-weight: 700; font-size: 14px;">CTA (Computer Tech & App)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: THE VISION -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-num">01</div>
+      <div class="brand">Karigar<span>Now</span></div>
+    </div>
+    <div class="grid-2">
+      <div class="gray-block">[Image: Daily Wage Workers at Chouraha]</div>
+      <div style="display: flex; flex-direction: column; justify-content: center;">
+        <h2 class="title-lg">Bridging the <br><span class="italic-accent">Digital Divide.</span></h2>
+        <p style="font-size: 20px; color: var(--mid); line-height: 1.6;">A contractor-centric platform designed to organize India's massive daily wage workforce and provide homeowners with reliable, vetted services.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: AGENDA -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-num">02</div>
+      <div class="f-disp" style="font-weight: 700;">Agenda</div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr; gap: 15px;">
+      <div class="agenda-item">
+        <span class="label">01</span>
+        <h3 class="f-disp">Problem Statement</h3>
+      </div>
+      <div class="agenda-item">
+        <span class="label">02</span>
+        <h3 class="f-disp">Existing Solutions</h3>
+      </div>
+      <div class="agenda-item">
+        <span class="label">03</span>
+        <h3 class="f-disp">Proposed Solution</h3>
+      </div>
+      <div class="agenda-item">
+        <span class="label">04</span>
+        <h3 class="f-disp">System Design</h3>
+      </div>
+      <div class="agenda-item">
+        <span class="label">05</span>
+        <h3 class="f-disp">Key Features</h3>
+      </div>
+      <div class="agenda-item">
+        <span class="label">06</span>
+        <h3 class="f-disp">Tech Stack</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: PROBLEM STATEMENT -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-num">03</div>
+      <div class="f-disp" style="font-weight: 700;">The Problem</div>
+    </div>
+    <div class="grid-3">
+      <div style="background: var(--ap); padding: 30px; border-radius: 12px;">
+        <div style="font-size: 40px; margin-bottom: 20px;">🏗️</div>
+        <h4 class="f-disp" style="font-size: 24px; margin-bottom: 15px;">Idle Workforce</h4>
+        <p style="font-size: 14px; color: var(--mid);">Over 50M workers wait 3-5 hours daily at street corners (Chourahas) with zero visibility.</p>
+      </div>
+      <div style="background: var(--ap); padding: 30px; border-radius: 12px;">
+        <div style="font-size: 40px; margin-bottom: 20px;">🔍</div>
+        <h4 class="f-disp" style="font-size: 24px; margin-bottom: 15px;">Discovery Gap</h4>
+        <p style="font-size: 14px; color: var(--mid);">Homeowners spend hours finding workers with no guarantee of skill or fair pricing.</p>
+      </div>
+      <div style="background: var(--ap); padding: 30px; border-radius: 12px;">
+        <div style="font-size: 40px; margin-bottom: 20px;">🛡️</div>
+        <h4 class="f-disp" style="font-size: 24px; margin-bottom: 15px;">Trust Gap</h4>
+        <p style="font-size: 14px; color: var(--mid);">No identity verification. Strangers enter homes with zero background checks or accountability.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: PROPOSED SOLUTION -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-num">04</div>
+      <div class="f-disp" style="font-weight: 700;">The Solution</div>
+    </div>
+    <div class="grid-2">
+      <div style="padding-top: 40px;">
+        <h2 class="title-lg">The <span class="italic-accent">Thekedar-Led</span> Model.</h2>
+        <ul style="list-style: none; margin-top: 30px;">
+          <li style="margin-bottom: 20px; border-left: 4px solid var(--accent); padding-left: 20px;">
+            <strong>Hybrid Management:</strong> Contractors manage teams of 5-50 workers.
+          </li>
+          <li style="margin-bottom: 20px; border-left: 4px solid var(--accent); padding-left: 20px;">
+            <strong>Smartphone Independence:</strong> Individual workers don't need phones; the Thekedar handles digital coordination.
+          </li>
+          <li style="margin-bottom: 20px; border-left: 4px solid var(--accent); padding-left: 20px;">
+            <strong>Escrow Security:</strong> Payments are locked until the customer is satisfied.
+          </li>
+        </ul>
+      </div>
+      <div class="gray-block">[Illustration: Thekedar-Worker-Customer Triangle]</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: DESIGN & IMPLEMENTATION -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-num">05</div>
+      <div class="f-disp" style="font-weight: 700;">How it Works</div>
+    </div>
+    <div class="grid-2" style="grid-template-columns: 1.5fr 1fr; gap: 10px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div>
+          <div class="step-num">01</div>
+          <h4 class="f-disp">Booking</h4>
+          <p style="font-size: 12px; color: var(--mid);">Customer selects category and vetted contractor.</p>
+        </div>
+        <div>
+          <div class="step-num">02</div>
+          <h4 class="f-disp">Escrow</h4>
+          <p style="font-size: 12px; color: var(--mid);">Funds held upfront for financial security.</p>
+        </div>
+        <div>
+          <div class="step-num">03</div>
+          <h4 class="f-disp">OTP Verify</h4>
+          <p style="font-size: 12px; color: var(--mid);">Worker provides OTP upon arrival at location.</p>
+        </div>
+        <div>
+          <div class="step-num">04</div>
+          <h4 class="f-disp">Payout</h4>
+          <p style="font-size: 12px; color: var(--mid);">Completion rating releases money to contractor.</p>
+        </div>
+      </div>
+      <div class="gray-block" style="height: 80%;">[UI Mockup: Booking Flow]</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: INTERFACE PREVIEW -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-num">06</div>
+      <div class="f-disp" style="font-weight: 700;">Platform Preview</div>
+    </div>
+    <div class="grid-2">
+      <div class="gray-block">[Dashboard Screenshot]</div>
+      <div style="display: flex; flex-direction: column; justify-content: center; gap: 20px;">
+        <div style="border: 1px solid var(--rule); padding: 15px; border-radius: 8px;">
+          <h5 class="f-disp">For Customers</h5>
+          <p style="font-size: 13px;">Browse by trade, compare ratings, and book in 60 seconds.</p>
+        </div>
+        <div style="border: 1px solid var(--rule); padding: 15px; border-radius: 8px;">
+          <h5 class="f-disp">For Thekedars</h5>
+          <p style="font-size: 13px;">Manage team availability, track earnings, and job requests.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: TECH STACK -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-num">07</div>
+      <div class="f-disp" style="font-weight: 700;">Technology Stack</div>
+    </div>
+    <div style="display: flex; justify-content: space-around; align-items: center; height: 60vh; text-align: center;">
+      <div>
+        <div style="font-size: 50px;">⚛️</div>
+        <h3 class="f-disp">Frontend</h3>
+        <p>React + Tailwind CSS</p>
+      </div>
+      <div style="font-size: 40px; color: var(--rule);">→</div>
+      <div>
+        <div style="font-size: 50px;">☕</div>
+        <h3 class="f-disp">Backend</h3>
+        <p>Java Servlets / Spring</p>
+      </div>
+      <div style="font-size: 40px; color: var(--rule);">→</div>
+      <div>
+        <div style="font-size: 50px;">🐘</div>
+        <h3 class="f-disp">Database</h3>
+        <p>PostgreSQL</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: THANK YOU -->
+  <div class="slide" style="text-align: center; display: none; align-content: center;">
+    <h1 class="title-xl">Thank <span class="italic-accent">You.</span></h1>
+    <p class="f-disp" style="font-size: 24px; margin-top: 20px;">Questions?</p>
+    <div style="margin-top: 40px; border-top: 1px solid var(--rule); padding-top: 20px; display: inline-block;">
+      <p style="font-weight: 700;">www.karigarnow.com</p>
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+
+    function showSlide(index) {
+      slides.forEach(s => s.classList.remove('active'));
+      slides[index].classList.add('active');
+    }
+
+    function nextSlide() {
+      if (currentSlide < slides.length - 1) {
+        currentSlide++;
+        showSlide(currentSlide);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        showSlide(currentSlide);
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+  </script>
+</body>
+</html>
