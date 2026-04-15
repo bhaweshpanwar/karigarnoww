@@ -43,22 +43,29 @@ function StatusBadge({ status }) {
 
 function RequestCard({ booking, onAccept, onDecline }) {
   const [accepted, setAccepted] = useState(false);
+  const [acceptedBooking, setAcceptedBooking] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { showToast } = useContext(ToastContext);
 
   const handleAccept = async () => {
+    setLoading(true);
     try {
       const res = await api.put(`/bookings/${booking.id}/accept`);
       if (res.data.success) {
+        setAcceptedBooking(res.data.data);
         setAccepted(true);
-        showToast('Booking accepted!', 'success');
+        showToast(`Booking accepted! OTP: ${res.data.data.otp}`, 'success');
         onAccept(booking.id, res.data.data);
       }
     } catch {
       showToast('Failed to accept booking', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDecline = async () => {
+    setLoading(true);
     try {
       const res = await api.put(`/bookings/${booking.id}/reject`);
       if (res.data.success) {
@@ -67,35 +74,41 @@ function RequestCard({ booking, onAccept, onDecline }) {
       }
     } catch {
       showToast('Failed to decline booking', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const serviceName = booking.service?.name || 'Service';
-  const area = booking.address ? `${booking.address.city || ''}` : '';
+  const displayBooking = acceptedBooking || booking;
+  const serviceName = displayBooking.service?.name || booking.service?.name || 'Service';
+  const area = displayBooking.address?.city || booking.address?.city || '';
 
   return (
     <div
       className="rounded-xl p-5"
       style={{ background: '#FFFFFF', border: '1.5px solid #DDD8D2' }}
     >
-      {accepted ? (
-        <div className="text-center py-4">
-          <p className="text-xs font-bold uppercase tracking-wider mb-4" style={{ color: '#6B6560' }}>
-            OTP Generated — Share with Worker
+      {accepted && acceptedBooking ? (
+        <div className="text-center py-2">
+          <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: '#1A6E42' }}>
+            ✓ Accepted
           </p>
-          <div className="flex justify-center gap-3 mb-4">
-            {booking.otp ? booking.otp.split('').map((d, i) => (
+          <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: '#6B6560' }}>
+            🔑 OTP — Share with Worker
+          </p>
+          <div className="flex justify-center gap-2 mb-3">
+            {acceptedBooking.otp ? acceptedBooking.otp.split('').map((d, i) => (
               <div
                 key={i}
-                className="w-14 h-16 rounded-xl flex items-center justify-center text-3xl font-black"
+                className="w-12 h-14 rounded-lg flex items-center justify-center text-2xl font-black"
                 style={{ background: '#D44B0A', color: '#FFFFFF' }}
               >
                 {d}
               </div>
-            )) : <span className="text-3xl font-black" style={{ color: '#D44B0A' }}>----</span>}
+            )) : <span className="text-2xl font-black" style={{ color: '#D44B0A' }}>----</span>}
           </div>
-          <p className="text-xs font-semibold" style={{ color: '#6B6560' }}>
-            Accepted — share OTP with dispatched worker
+          <p className="text-xs" style={{ color: '#A89E97' }}>
+            Dispatch workers from Job Details
           </p>
         </div>
       ) : (
@@ -131,14 +144,16 @@ function RequestCard({ booking, onAccept, onDecline }) {
           <div className="flex gap-3">
             <button
               onClick={handleAccept}
-              className="flex-1 py-2.5 rounded-lg text-sm font-bold text-white transition-all hover:opacity-90"
+              disabled={loading}
+              className="flex-1 py-2.5 rounded-lg text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-50"
               style={{ background: '#1A6E42' }}
             >
-              Accept
+              {loading ? 'Accepting...' : 'Accept'}
             </button>
             <button
               onClick={handleDecline}
-              className="flex-1 py-2.5 rounded-lg text-sm font-bold border transition-all hover:opacity-80"
+              disabled={loading}
+              className="flex-1 py-2.5 rounded-lg text-sm font-bold border transition-all hover:opacity-80 disabled:opacity-50"
               style={{ borderColor: '#B93424', color: '#B93424' }}
             >
               Decline
@@ -195,19 +210,23 @@ function ActiveJobCard({ booking }) {
         </button>
       )}
 
-      {booking.booking_status === 'dispatched' && (
+      {(booking.booking_status === 'accepted' || booking.booking_status === 'dispatched') && booking.otp && (
         <div>
-          {booking.otp && (
-            <div className="flex justify-center gap-2 mb-3">
-              {booking.otp.split('').map((d, i) => (
-                <div key={i} className="w-10 h-12 rounded-lg flex items-center justify-center text-xl font-black" style={{ background: '#FDF0E8', color: '#D44B0A' }}>{d}</div>
-              ))}
-            </div>
-          )}
+          <div className="flex justify-center gap-2 mb-3">
+            {booking.otp.split('').map((d, i) => (
+              <div key={i} className="w-10 h-12 rounded-lg flex items-center justify-center text-xl font-black" style={{ background: '#FDF0E8', color: '#D44B0A' }}>{d}</div>
+            ))}
+          </div>
           <div className="text-center">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold" style={{ background: '#E8F5EE', color: '#1A6E42' }}>
-              Workers Sent
-            </span>
+            {booking.booking_status === 'accepted' ? (
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold" style={{ background: '#EFF6FF', color: '#1A4ED8' }}>
+                OTP Generated — Dispatch Workers
+              </span>
+            ) : (
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold" style={{ background: '#E8F5EE', color: '#1A6E42' }}>
+                Workers Sent
+              </span>
+            )}
           </div>
         </div>
       )}

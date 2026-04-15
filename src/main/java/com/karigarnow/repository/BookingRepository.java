@@ -83,6 +83,7 @@ public interface BookingRepository extends JpaRepository<Booking, UUID> {
         LEFT JOIN FETCH b.address a
         LEFT JOIN FETCH b.bookingWorkers bw
         LEFT JOIN FETCH bw.worker
+        LEFT JOIN FETCH b.reviews
         WHERE b.id = :id
         """)
     Optional<Booking> findByIdWithDetails(@Param("id") UUID id);

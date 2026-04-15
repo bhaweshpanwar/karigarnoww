@@ -140,7 +140,7 @@ public class BookingService {
         validateBookingAccess(booking, role, userId);
 
         return new ApiResponse<>(true, "Booking fetched successfully",
-                toBookingResponse(booking, false));
+                toBookingResponse(booking, true));
     }
 
     // ---------- ACCEPT BOOKING ----------
@@ -398,6 +398,15 @@ public class BookingService {
                     .build();
         }
 
+        ReviewResponse reviewResponse = null;
+        if (booking.getReviews() != null && !booking.getReviews().isEmpty()) {
+            Review firstReview = booking.getReviews().iterator().next();
+            reviewResponse = ReviewResponse.builder()
+                    .rating(firstReview.getRating())
+                    .comment(firstReview.getComment())
+                    .build();
+        }
+
         return BookingResponse.builder()
                 .id(booking.getId())
                 .service(ServiceInfoResponse.builder()
@@ -407,6 +416,7 @@ public class BookingService {
                         .build())
                 .consumerName(consumerName)
                 .thekedarName(thekedarName)
+                .thekedarId(booking.getThekedar().getId())
                 .workersNeeded(booking.getWorkersNeeded())
                 .address(addressResponse)
                 .jobDescription(booking.getJobDescription())
@@ -419,6 +429,8 @@ public class BookingService {
                 .platformFee(booking.getPlatformFee())
                 .thekedarPayout(booking.getThekedarPayout())
                 .assignedWorkers(workerResponses)
+                .hasReview(booking.getReviews() != null && !booking.getReviews().isEmpty())
+                .review(reviewResponse)
                 .createdAt(booking.getCreatedAt())
                 .build();
     }
@@ -445,6 +457,8 @@ public class BookingService {
                 .scheduledAt(booking.getScheduledAt())
                 .workersNeeded(booking.getWorkersNeeded())
                 .createdAt(booking.getCreatedAt())
+                .otp(booking.getOtp())
+                .otpVerified(booking.getOtpVerified())
                 .build();
     }
 }

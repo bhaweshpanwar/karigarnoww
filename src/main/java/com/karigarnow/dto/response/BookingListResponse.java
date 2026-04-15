@@ -45,4 +45,10 @@ public class BookingListResponse {
 
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
+
+    @JsonProperty("otp")
+    private String otp;
+
+    @JsonProperty("otp_verified")
+    private Boolean otpVerified;
 }

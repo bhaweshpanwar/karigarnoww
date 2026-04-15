@@ -29,6 +29,9 @@ public class BookingResponse {
     @JsonProperty("thekedar_name")
     private String thekedarName;
 
+    @JsonProperty("thekedar_id")
+    private UUID thekedarId;
+
     @JsonProperty("workers_needed")
     private Integer workersNeeded;
 
@@ -64,6 +67,12 @@ public class BookingResponse {
 
     @JsonProperty("assigned_workers")
     private List<BookingWorkerResponse> assignedWorkers;
+
+    @JsonProperty("has_review")
+    private Boolean hasReview;
+
+    @JsonProperty("review")
+    private ReviewResponse review;
 
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
