@@ -250,6 +250,7 @@ Returns the currently authenticated user's info. Used by the frontend to restore
     "id": "1d3e4bb3-2ee5-44bd-9ecf-efdc4e5dac41",
     "name": "Rajesh Kumar",
     "email": "rajesh@example.com",
+    "mobile": "+919876543210",
     "role": "consumer",
     "photo": "https://..."
   }
@@ -470,8 +471,8 @@ Create a new service booking.
     "booking_status": "pending",
     "payment_status": "held",
     "total_amount": 1200.00,
-    "platform_fee": 132.00,
-    "thekedar_payout": 1068.00,
+    "platform_fee": 60.00,
+    "thekedar_payout": 1140.00,
     "assigned_workers": null,
     "created_at": "2026-04-02T10:00:00"
   }
@@ -560,8 +561,8 @@ Returns full booking details. Consumers see their own bookings, thekedars see as
     "booking_status": "dispatched",
     "payment_status": "held",
     "total_amount": 500.00,
-    "platform_fee": 55.00,
-    "thekedar_payout": 445.00,
+    "platform_fee": 25.00,
+    "thekedar_payout": 475.00,
     "assigned_workers": [
       {
         "id": "uuid",
@@ -615,8 +616,8 @@ Thekedar accepts a pending booking and generates OTP.
     "booking_status": "accepted",
     "payment_status": "held",
     "total_amount": 500.00,
-    "platform_fee": 55.00,
-    "thekedar_payout": 445.00,
+    "platform_fee": 25.00,
+    "thekedar_payout": 475.00,
     "assigned_workers": null,
     "created_at": "2026-04-02T10:00:00"
   }
@@ -829,6 +830,282 @@ Cancel a booking. Only allowed from pending or accepted status.
 
 ---
 
+## User Module
+
+### 22. Get Current User Profile
+
+**GET** `/api/users/me`
+
+Returns the profile of the currently authenticated user.
+
+**Auth:** Yes — Any authenticated user
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "User profile fetched",
+  "data": {
+    "id": "1d3e4bb3-2ee5-44bd-9ecf-efdc4e5dac41",
+    "name": "Rajesh Kumar",
+    "email": "rajesh@example.com",
+    "mobile": "+919876543210",
+    "role": "consumer",
+    "photo": "https://..."
+  }
+}
+```
+
+---
+
+### 23. Update Current User Profile
+
+**PUT** `/api/users/me`
+
+Update the authenticated user's profile.
+
+**Auth:** Yes — Any authenticated user
+
+**Request Body:**
+```json
+{
+  "name": "Rajesh Kumar",
+  "email": "rajesh@example.com",
+  "mobile": "+919876543210",
+  "photo": "https://..."
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| name | string | Yes | Full name (not blank) |
+| email | string | No | Valid email format (must be unique if changed) |
+| mobile | string | No | Mobile number |
+| photo | string | No | Photo URL |
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Profile updated successfully",
+  "data": {
+    "id": "1d3e4bb3-2ee5-44bd-9ecf-efdc4e5dac41",
+    "name": "Rajesh Kumar",
+    "email": "rajesh@example.com",
+    "mobile": "+919876543210",
+    "role": "consumer",
+    "photo": "https://..."
+  }
+}
+```
+
+**Errors:**
+- `400` — Validation error (invalid email, name blank)
+- `409` — Email already in use
+
+---
+
+### 24. Change Password
+
+**PUT** `/api/users/me/password`
+
+Change the authenticated user's password.
+
+**Auth:** Yes — Any authenticated user
+
+**Request Body:**
+```json
+{
+  "current_password": "oldpassword123",
+  "new_password": "newpassword456"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| current_password | string | Yes | Current password (must match) |
+| new_password | string | Yes | New password (not blank) |
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Password changed successfully",
+  "data": null
+}
+```
+
+**Errors:**
+- `400` — Current password is incorrect
+- `400` — Validation error
+
+---
+
+## Address Module
+
+### 25. List Addresses
+
+**GET** `/api/addresses`
+
+Returns all addresses for the authenticated user.
+
+**Auth:** Yes — Any authenticated user
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Addresses fetched successfully",
+  "data": [
+    {
+      "id": "uuid",
+      "address_line1": "123 Main Street",
+      "address_line2": "Sector 5",
+      "city": "Noida",
+      "state": "Uttar Pradesh",
+      "country": "India",
+      "postal_code": "201301",
+      "is_primary": true
+    }
+  ]
+}
+```
+
+---
+
+### 26. Create Address
+
+**POST** `/api/addresses`
+
+Add a new address for the authenticated user.
+
+**Auth:** Yes — Any authenticated user
+
+**Request Body:**
+```json
+{
+  "address_line1": "123 Main Street",
+  "address_line2": "Sector 5",
+  "city": "Noida",
+  "state": "Uttar Pradesh",
+  "country": "India",
+  "postal_code": "201301",
+  "is_primary": false
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| address_line1 | string | Yes | Address line 1 (not blank) |
+| address_line2 | string | No | Address line 2 / landmark |
+| city | string | Yes | City (not blank) |
+| state | string | Yes | State (not blank) |
+| country | string | Yes | Country (not blank) |
+| postal_code | string | Yes | Postal/zip code (not blank) |
+| is_primary | boolean | No | Set as primary address (default: false) |
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "message": "Address created successfully",
+  "data": {
+    "id": "uuid",
+    "address_line1": "123 Main Street",
+    "address_line2": "Sector 5",
+    "city": "Noida",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "postal_code": "201301",
+    "is_primary": false
+  }
+}
+```
+
+**Notes:**
+- If this is the user's first address, it is automatically set as primary.
+- If `is_primary` is true, any existing primary address is unset.
+
+---
+
+### 27. Update Address
+
+**PUT** `/api/addresses/{id}`
+
+Update an existing address. Only the address owner can update.
+
+**Auth:** Yes — Owner of the address only
+
+**Path Parameters:**
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Address ID |
+
+**Request Body:**
+```json
+{
+  "address_line1": "456 New Street",
+  "address_line2": "Near Mall",
+  "city": "Noida",
+  "state": "Uttar Pradesh",
+  "country": "India",
+  "postal_code": "201301",
+  "is_primary": true
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Address updated successfully",
+  "data": {
+    "id": "uuid",
+    "address_line1": "456 New Street",
+    "address_line2": "Near Mall",
+    "city": "Noida",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "postal_code": "201301",
+    "is_primary": true
+  }
+}
+```
+
+**Errors:**
+- `403` — Not authorized to modify this address
+- `404` — Address not found
+
+---
+
+### 28. Delete Address
+
+**DELETE** `/api/addresses/{id}`
+
+Delete an address. Only the address owner can delete.
+
+**Auth:** Yes — Owner of the address only
+
+**Path Parameters:**
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Address ID |
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Address deleted successfully",
+  "data": null
+}
+```
+
+**Errors:**
+- `403` — Not authorized to delete this address
+- `404` — Address not found
+
+---
+
 ## Future Endpoints (To Be Implemented)
 
 ### Auth Module
@@ -837,17 +1114,6 @@ Cancel a booking. Only allowed from pending or accepted status.
 - [ ] `POST /api/auth/forgot-password` - Send reset email
 - [ ] `POST /api/auth/reset-password` - Reset password with token
 
-### User Module
-- [ ] `GET /api/users/me` - Get current user profile
-- [ ] `PUT /api/users/me` - Update current user profile
-- [ ] `PUT /api/users/me/password` - Change password
-
-### Address Module
-- [ ] `GET /api/addresses` - List user addresses
-- [ ] `POST /api/addresses` - Add new address
-- [ ] `PUT /api/addresses/{id}` - Update address
-- [ ] `DELETE /api/addresses/{id}` - Delete address
-
 ### Thekedar Module
 - [ ] `GET /api/thekedars` - List all thekedars (with filters)
 - [x] `GET /api/thekedars/{id}` - Get thekedar profile
@@ -855,11 +1121,7 @@ Cancel a booking. Only allowed from pending or accepted status.
 
 ### Booking Module ✅ (Implemented in Section 8-16 above)
 
-### Worker Module
-- [x] `GET /api/workers` - List workers (thekedar's team)
-- [x] `POST /api/workers` - Add worker to team
-- [x] `PUT /api/workers/{id}` - Update worker
-- [x] `DELETE /api/workers/{id}` - Remove worker
+### Worker Module ✅ (Implemented in Section 18-21 above)
 
 ### Review Module
 - [ ] `POST /api/reviews` - Create review (consumer)

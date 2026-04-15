@@ -37,7 +37,7 @@ public class BookingService {
     private final AddressRepository addressRepository;
     private final EarningsRepository earningsRepository;
 
-    private static final BigDecimal PLATFORM_COMMISSION = new BigDecimal("0.11");
+    private static final BigDecimal PLATFORM_COMMISSION = new BigDecimal("0.05");
     private static final int MIN_HOURS = 2;
     private static final SecureRandom random = new SecureRandom();
 

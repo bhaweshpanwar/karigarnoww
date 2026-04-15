@@ -44,6 +44,7 @@ public class AuthController {
                 .id(user.getId().toString())
                 .name(user.getName())
                 .email(user.getEmail())
+                .mobile(user.getMobile())
                 .role(user.getRole())
                 .photo(user.getPhoto())
                 .build();

@@ -37,12 +37,14 @@ export default function Navbar() {
 
   const consumerMenu = [
     { label: 'My Bookings', to: '/bookings' },
+    { label: 'Settings', to: '/settings' },
   ];
 
   const thekedarMenu = [
     { label: 'Dashboard', to: '/thekedar/dashboard' },
     { label: 'My Workers', to: '/thekedar/workers' },
     { label: 'Earnings', to: '/thekedar/earnings' },
+    { label: 'Settings', to: '/settings' },
   ];
 
   const avatarLetter = user?.name ? user.name.charAt(0).toUpperCase() : '?';

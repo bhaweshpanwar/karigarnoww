@@ -7,7 +7,7 @@ function formatCurrency(n) {
   return '₹' + Number(n || 0).toLocaleString('en-IN');
 }
 
-const PLATFORM_FEE_RATE = 0.11;
+const PLATFORM_FEE_RATE = 0.05;
 
 export default function CreateBooking() {
   const { thekedarId } = useParams();
@@ -27,6 +27,8 @@ export default function CreateBooking() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState('');
 
   useEffect(() => {
     setLoadingThekedar(true);
@@ -35,6 +37,18 @@ export default function CreateBooking() {
       .catch(() => setThekedarError('Could not load thekedar info.'))
       .finally(() => setLoadingThekedar(false));
   }, [thekedarId]);
+
+  useEffect(() => {
+    api.get('/addresses')
+      .then(res => {
+        if (res.data.success) {
+          setAddresses(res.data.data);
+          const primary = res.data.data.find(a => a.is_primary);
+          if (primary) setSelectedAddressId(primary.id);
+          else if (res.data.data.length > 0) setSelectedAddressId(res.data.data[0].id);
+        }
+      });
+  }, []);
 
   const teamSize = thekedar?.team_size || thekedar?.workers?.length || 10;
 
@@ -59,6 +73,7 @@ export default function CreateBooking() {
     if (!form.workers_needed || form.workers_needed < 1) return 'Select at least 1 worker';
     if (!form.scheduled_date) return 'Please select a date';
     if (!form.scheduled_time) return 'Please select a time';
+    if (!selectedAddressId) return 'Please select an address';
     if (!form.job_description || form.job_description.trim().length < 20) return 'Job description must be at least 20 characters';
     return '';
   };
@@ -78,7 +93,7 @@ export default function CreateBooking() {
         workersNeeded: form.workers_needed,
         jobDescription: form.job_description,
         scheduledAt: scheduledAt,
-        addressId: '00000000-0000-0000-0000-000000000000',
+        addressId: selectedAddressId,
       };
       const res = await api.post('/bookings', payload);
       if (res.data.success) {
@@ -185,6 +200,35 @@ export default function CreateBooking() {
             </div>
           </div>
 
+          {/* Address selector */}
+          {addresses.length > 0 ? (
+            <div className="p-5 rounded-xl border-2 border-[#DDD8D2] bg-white">
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-[#A89E97] mb-2">Address *</label>
+              <select
+                value={selectedAddressId}
+                onChange={e => setSelectedAddressId(e.target.value)}
+                required
+                className="w-full px-4 py-3 rounded-lg bg-white border-2 border-[#DDD8D2] text-[#0E0D0C] text-sm outline-none focus:border-[#0E0D0C] transition-colors"
+              >
+                {addresses.map(addr => (
+                  <option key={addr.id} value={addr.id}>
+                    {addr.address_line1}{addr.address_line2 ? `, ${addr.address_line2}` : ''} — {addr.city}, {addr.postal_code}{addr.is_primary ? ' (Primary)' : ''}
+                  </option>
+                ))}
+              </select>
+              <Link to="/settings" className="text-[#D44B0A] text-xs mt-2 inline-block hover:underline">
+                Manage addresses
+              </Link>
+            </div>
+          ) : (
+            <div className="p-5 rounded-xl border-2 border-[#B93424] bg-[#FDECEA]">
+              <p className="text-[#B93424] text-sm mb-2">No addresses saved. Please add an address first.</p>
+              <Link to="/settings" className="text-[#D44B0A] text-sm font-semibold hover:underline">
+                Go to Settings to add address
+              </Link>
+            </div>
+          )}
+
           {/* Job description */}
           <div className="p-5 rounded-xl border-2 border-[#DDD8D2] bg-white">
             <label className="block text-[10px] font-bold uppercase tracking-widest text-[#A89E97] mb-2">Job Description * (min 20 chars)</label>
@@ -211,7 +255,7 @@ export default function CreateBooking() {
                   <span className="text-[#0E0D0C]">{formatCurrency(subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#6B6560]">Platform fee (11%)</span>
+                  <span className="text-[#6B6560]">Platform fee (5%)</span>
                   <span className="text-[#0E0D0C]">{formatCurrency(platformFee)}</span>
                 </div>
                 <div className="flex justify-between border-t border-[#EDE9E4] pt-1.5 font-bold">

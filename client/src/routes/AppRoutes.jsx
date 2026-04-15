@@ -12,6 +12,7 @@ const ThekedarProfile = lazy(() => import('../pages/ThekedarProfile'));
 const BookingList = lazy(() => import('../pages/BookingList'));
 const BookingDetail = lazy(() => import('../pages/BookingDetail'));
 const CreateBooking = lazy(() => import('../pages/CreateBooking'));
+const Settings = lazy(() => import('../pages/Settings'));
 const ThekedarLayout = lazy(() => import('../pages/thekedar/ThekedarLayout'));
 const Dashboard = lazy(() => import('../pages/thekedar/Dashboard'));
 const ManageJobs = lazy(() => import('../pages/thekedar/ManageJobs'));
@@ -112,6 +113,14 @@ function PublicRoutes() {
             element={
               <ProtectedRoute>
                 <BookingDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
               </ProtectedRoute>
             }
           />
