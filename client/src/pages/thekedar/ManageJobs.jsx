@@ -172,7 +172,7 @@ function DispatchModal({ booking, workers, onClose, onDispatch }) {
     }
     setSubmitting(true);
     try {
-      const res = await api.put(`/bookings/${booking.id}/dispatch`, { worker_ids: selected });
+      const res = await api.put(`/bookings/${booking.id}/dispatch`, { workerIds: selected });
       if (res.data.success) {
         showToast('Workers dispatched!', 'success');
         onDispatch(booking.id, res.data.data);

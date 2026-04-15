@@ -40,6 +40,9 @@ public class BookingListResponse {
     @JsonProperty("scheduled_at")
     private LocalDateTime scheduledAt;
 
+    @JsonProperty("workers_needed")
+    private Integer workersNeeded;
+
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
 }

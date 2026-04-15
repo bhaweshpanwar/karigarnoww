@@ -443,6 +443,7 @@ public class BookingService {
                 .paymentStatus(booking.getPaymentStatus())
                 .totalAmount(booking.getTotalAmount())
                 .scheduledAt(booking.getScheduledAt())
+                .workersNeeded(booking.getWorkersNeeded())
                 .createdAt(booking.getCreatedAt())
                 .build();
     }
