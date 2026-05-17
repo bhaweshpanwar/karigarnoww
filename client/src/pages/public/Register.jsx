@@ -36,9 +36,10 @@ export default function Register() {
     if (!form.email.trim()) return 'Email is required';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) return 'Invalid email format';
     if (!form.mobile.trim()) return 'Mobile number is required';
-    if (!/^\d{10}$/.test(form.mobile)) return 'Mobile must be 10 digits';
+    if (!/^\d{10}$/.test(form.mobile)) return 'Mobile must be exactly 10 digits';
     if (!form.password) return 'Password is required';
-    if (form.password.length < 8) return 'Password must be at least 8 characters';
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(form.password))
+      return 'Password must contain uppercase, lowercase, number and special character';
     if (form.password !== form.confirmPassword) return 'Passwords do not match';
     return '';
   };
@@ -63,10 +64,7 @@ export default function Register() {
     } catch (err) {
       const data = err.response?.data;
       if (err.response?.status === 409) {
-        setError('Email already registered');
-      } else if (data?.data && typeof data.data === 'object') {
-        const firstField = Object.values(data.data)[0];
-        setError(Array.isArray(firstField) ? firstField[0] : firstField);
+        setError(data?.message || 'Registration failed');
       } else if (data?.message) {
         setError(data.message);
       } else {

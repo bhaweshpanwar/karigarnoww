@@ -29,8 +29,10 @@ public class Thekedar {
     @JoinColumn(name = "id")
     private User user;
 
+    @Column(columnDefinition = "TEXT")
     private String bio;
 
+    @Column(columnDefinition = "TEXT")
     private String experience;
 
     @Builder.Default
@@ -49,6 +51,7 @@ public class Thekedar {
     @Builder.Default
     private Integer totalJobs = 0;
 
+    @Column(columnDefinition = "TEXT")
     private String location;
 
     @CreationTimestamp

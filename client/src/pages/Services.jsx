@@ -94,7 +94,7 @@ export default function Services() {
               <div
                 key={svc.id}
                 onClick={() => navigate(`/services/${svc.slug}`)}
-                className="group p-6 rounded-xl border-2 border-[#DDD8D2] bg-white hover:border-[#FF6B00] cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(255,107,0,0.12)]"
+                className="group p-6 rounded-xl border-2 border-[#DDD8D2] bg-white cursor-pointer transition-all duration-200 hover:border-none hover:shadow-md hover:-translate-y-0.5 hover:bg-bg2"
               >
                 <p className="font-['Fraunces',serif] text-[11px] font-bold text-[#A89E97] tracking-widest uppercase mb-3">
                   Service

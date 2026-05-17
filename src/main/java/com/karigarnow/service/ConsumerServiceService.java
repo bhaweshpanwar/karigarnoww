@@ -98,6 +98,7 @@ public class ConsumerServiceService {
                 .experience(thekedar.getExperience())
                 .ratingAverage(thekedar.getRatingAverage())
                 .totalJobs(thekedar.getTotalJobs())
+                .teamSize(thekedar.getTeamSize())
                 .location(thekedar.getLocation())
                 .services(toThekedarServiceResponses(thekedar.getServices()))
                 .reviews(toReviewSummaryResponses(reviews))
@@ -125,6 +126,7 @@ public class ConsumerServiceService {
                 .customRate(ts.getCustomRate())
                 .experience(t.getExperience())
                 .totalJobs(t.getTotalJobs())
+                .teamSize(t.getTeamSize())
                 .location(t.getLocation())
                 .isOnline(t.getIsOnline())
                 .build();

@@ -20,6 +20,7 @@ const JobDetail = lazy(() => import('../pages/thekedar/JobDetail'));
 const MyWorkers = lazy(() => import('../pages/thekedar/MyWorkers'));
 const Earnings = lazy(() => import('../pages/thekedar/Earnings'));
 const ThekedarProfilePage = lazy(() => import('../pages/thekedar/ThekedarProfile'));
+const CompleteProfile = lazy(() => import('../pages/thekedar/CompleteProfile'));
 
 function FullPageSpinner() {
   return (
@@ -134,6 +135,16 @@ function PublicRoutes() {
 export default function AppRoutes() {
   return (
     <Routes>
+      <Route 
+        path="/thekedar/complete-profile" 
+        element={
+          <ThekedarRoute>
+            <Suspense fallback={<FullPageSpinner />}>
+              <CompleteProfile />
+            </Suspense>
+          </ThekedarRoute>
+        } 
+      />
       <Route path="/thekedar/*" element={<ThekedarShell />} />
       <Route path="*" element={<PublicRoutes />} />
     </Routes>

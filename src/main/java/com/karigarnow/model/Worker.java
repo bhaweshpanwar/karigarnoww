@@ -32,6 +32,7 @@ public class Worker {
 
     private String mobile;
 
+    @Column(columnDefinition = "TEXT")
     private String skills;
 
     @Column(precision = 10, scale = 2)

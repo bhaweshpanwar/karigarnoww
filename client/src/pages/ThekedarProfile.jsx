@@ -101,7 +101,11 @@ export default function ThekedarProfile() {
                 </div>
                 <div className="px-4 py-3 rounded-lg bg-[#F5F1EC]">
                   <p className="text-[#6B6560] text-xs mb-1">Team Size</p>
-                  <p className="text-[#0E0D0C] font-semibold">{(thekedar.team_size || thekedar.workers?.length) ? `${thekedar.team_size || thekedar.workers?.length} workers` : 'N/A'}</p>
+                  <p className="text-[#0E0D0C] font-semibold">
+                    {thekedar.team_size !== undefined 
+                      ? `${thekedar.team_size} worker${thekedar.team_size !== 1 ? 's' : ''}` 
+                      : '1 worker'}
+                  </p>
                 </div>
               </div>
 

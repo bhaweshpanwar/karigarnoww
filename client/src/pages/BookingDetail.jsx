@@ -36,7 +36,7 @@ function OtpDisplayBox({ otp }) {
   if (!otp) return null;
   return (
     <div className="rounded-xl p-5 mb-6 text-center" style={{ background: '#FDFCFA', border: '2px solid #0E0D0C' }}>
-      <p className="text-sm font-bold mb-4" style={{ color: '#0E0D0C' }}>🔐 Share this OTP with worker</p>
+      <p className="text-sm font-bold mb-4" style={{ color: '#0E0D0C' }}>Share this OTP with worker</p>
       <div className="flex justify-center gap-3 mb-4">
         {otp.split('').map((d, i) => (
           <div key={i}
@@ -344,7 +344,7 @@ export default function BookingDetail() {
                             animation: active ? 'pulse-ring 1.5s infinite' : 'none',
                           }}
                         >
-                          {done ? '✓' : idx + 1}
+                          {done ? 'Done' : idx + 1}
                         </div>
                         <p className="mt-1.5 text-[10px] font-medium text-center leading-tight"
                           style={{ color: done ? '#0E0D0C' : '#DDD8D2' }}>
@@ -551,7 +551,7 @@ export default function BookingDetail() {
               {/* Review — completed without review */}
               {booking.booking_status === 'completed' && !booking.has_review && (
                 <div className="rounded-xl p-6" style={{ background: '#FFFFFF', border: '1.5px solid #DDD8D2' }}>
-                  <h2 className="text-sm font-bold mb-1" style={{ color: '#0E0D0C' }}>⭐ Rate your experience</h2>
+                  <h2 className="text-sm font-bold mb-1" style={{ color: '#0E0D0C' }}>Rate your experience</h2>
                   <p className="text-xs mb-4" style={{ color: '#6B6560' }}>
                     How was your experience with {booking.thekedar_name}?
                   </p>
@@ -594,7 +594,7 @@ export default function BookingDetail() {
 
               {booking.booking_status === 'completed' && booking.has_review && !booking.review && (
                 <div className="rounded-xl p-5 text-center" style={{ background: '#E8F5EE', border: '1px solid #D1E8D6' }}>
-                  <p className="text-sm font-medium" style={{ color: '#1A6E42' }}>✓ Thank you for your feedback!</p>
+                  <p className="text-sm font-medium" style={{ color: '#1A6E42' }}>Thank you for your feedback!</p>
                 </div>
               )}
             </div>

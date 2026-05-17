@@ -130,11 +130,9 @@ export default function ServiceDetail() {
                     <button
                       key={opt.v}
                       onClick={() => { setSort(opt.v); fetchService(0); }}
-                      className={`text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors border-2 ${
-                        sort === opt.v
-                          ? 'bg-[#0E0D0C] border-[#0E0D0C] text-white'
-                          : 'bg-white border-[#DDD8D2] text-[#6B6560] hover:border-[#D44B0A]'
-                      }`}
+                      variant={sort === opt.v ? 'solid' : 'outline'}
+                      size="sm"
+                      className="w-full text-left"
                     >
                       {opt.l}
                     </button>
@@ -178,7 +176,7 @@ export default function ServiceDetail() {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {thekedars.map(t => (
-                    <div key={t.id} className="p-5 rounded-xl border-2 border-[#DDD8D2] bg-white hover:border-[#D44B0A] transition-colors">
+                    <div key={t.id} className="p-5 rounded-xl border-2 border-[#DDD8D2] bg-white transition-all duration-200 hover:border-none hover:shadow-md hover:-translate-y-0.5 hover:bg-bg2">
                       <div className="flex items-start gap-3 mb-3">
                         <div className="w-12 h-12 rounded-full bg-[#FF6B00] flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
                           {t.name.charAt(0).toUpperCase()}
@@ -198,12 +196,12 @@ export default function ServiceDetail() {
                       <p className="text-[#D44B0A] font-semibold text-sm mb-3">₹{t.custom_rate}/hr per worker</p>
                       <p className="text-[#6B6560] text-xs mb-4">{t.experience}</p>
                       <div className="flex gap-2">
-                        <button onClick={() => navigate(`/thekedars/${t.id}`)}
-                          className="flex-1 py-2 rounded-lg border-2 border-[#DDD8D2] text-[#6B6560] text-xs font-medium hover:border-[#D44B0A] hover:text-[#D44B0A] transition-colors">
+                        <button variant="outline" size="sm" className="flex-1"
+                          onClick={() => navigate(`/thekedars/${t.id}`)}>
                           View Profile
                         </button>
-                        <button onClick={() => handleBook(t.id)}
-                          className="flex-1 py-2 rounded-lg bg-ink text-white text-xs font-bold hover:bg-accent transition-colors">
+                        <button variant="solid" size="sm" className="flex-1"
+                          onClick={() => handleBook(t.id)}>
                           Book Now
                         </button>
                       </div>
@@ -213,8 +211,8 @@ export default function ServiceDetail() {
 
                 {hasMore && (
                   <div className="mt-6 text-center">
-                    <button onClick={loadMore} disabled={loadingMore}
-                      className="px-8 py-3 rounded-xl border-2 border-[#DDD8D2] text-[#6B6560] text-sm font-medium hover:border-[#D44B0A] hover:text-[#D44B0A] transition-colors disabled:opacity-50">
+                    <button variant="outline" size="md"
+                      onClick={loadMore} disabled={loadingMore}>
                       {loadingMore ? 'Loading...' : 'Load More'}
                     </button>
                   </div>

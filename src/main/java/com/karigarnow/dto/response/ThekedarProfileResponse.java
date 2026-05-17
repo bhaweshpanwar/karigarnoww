@@ -37,6 +37,9 @@ public class ThekedarProfileResponse {
     @JsonProperty("total_jobs")
     private Integer totalJobs;
 
+    @JsonProperty("team_size")
+    private Integer teamSize;
+
     @JsonProperty("location")
     private String location;
 

@@ -225,14 +225,14 @@ export default function Login() {
           </form>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 my-6 text-[12px]" style={{ color: '#A89E97' }}>
+          {/* <div className="flex items-center gap-3 my-6 text-[12px]" style={{ color: '#A89E97' }}>
             <div className="flex-1 h-[1.5px]" style={{ background: '#DDD8D2' }} />
             or continue with
             <div className="flex-1 h-[1.5px]" style={{ background: '#DDD8D2' }} />
-          </div>
+          </div> */}
 
           {/* Google */}
-          <button className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-sm border-2 bg-white text-[13px] font-semibold transition-colors"
+          {/* <button className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-sm border-2 bg-white text-[13px] font-semibold transition-colors"
             style={{ borderColor: '#DDD8D2' }}
             onMouseEnter={e => e.currentTarget.style.background = '#F5F1EC'}
             onMouseLeave={e => e.currentTarget.style.background = '#FFFFFF'}
@@ -244,7 +244,7 @@ export default function Login() {
               <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
             </svg>
             Continue with Google
-          </button>
+          </button> */}
         </div>
       </div>
 

@@ -95,10 +95,10 @@ export default function BookingList() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-semibold transition-colors border-2 ${
+              className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 border-2 ${
                 activeTab === tab
                   ? 'bg-[#FF6B00] border-[#FF6B00] text-white'
-                  : 'bg-white border-[#DDD8D2] text-[#6B6560] hover:border-[#D44B0A]'
+                  : 'bg-white border-[#DDD8D2] text-[#6B6560] hover:border-none hover:shadow-md hover:-translate-y-0.5 hover:bg-bg2'
               }`}
             >
               {tab === 'All' ? 'All' : STATUS_LABELS[tab] || tab}
@@ -124,7 +124,6 @@ export default function BookingList() {
         {/* Empty */}
         {!loading && !error && bookings.length === 0 && (
           <div className="text-center py-20">
-            <div className="text-5xl mb-4">📋</div>
             <h3 className="text-[#0E0D0C] font-bold text-lg mb-2">No bookings yet.</h3>
             <p className="text-[#6B6560] text-sm mb-6">Book your first service!</p>
             <Link to="/services"
@@ -139,7 +138,7 @@ export default function BookingList() {
           <>
             <div className="space-y-3">
               {bookings.map(b => (
-                <div key={b.id} className="p-5 rounded-xl border-2 border-[#DDD8D2] bg-white hover:border-[#D44B0A] transition-colors">
+                <div key={b.id} className="p-5 rounded-xl border-2 border-[#DDD8D2] bg-white transition-all duration-200 hover:border-none hover:shadow-md hover:-translate-y-0.5 hover:bg-bg2">
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <h3 className="text-[#0E0D0C] font-semibold mb-0.5">{b.service_name}</h3>
@@ -150,12 +149,12 @@ export default function BookingList() {
                     </span>
                   </div>
                   <div className="flex items-center gap-4 text-xs text-[#6B6560] mb-3">
-                    {b.scheduled_at && <span>📅 {formatDate(b.scheduled_at)}</span>}
-                    <span>👷 {b.workers_needed || 1} worker{(b.workers_needed || 1) > 1 ? 's' : ''}</span>
+                    {b.scheduled_at && <span>Date: {formatDate(b.scheduled_at)}</span>}
+                    <span>Workers: {b.workers_needed || 1} worker{(b.workers_needed || 1) > 1 ? 's' : ''}</span>
                     <span className="text-[#D44B0A] font-semibold">{formatCurrency(b.total_amount)}</span>
                   </div>
-                  <button onClick={() => navigate(`/bookings/${b.id}`)}
-                    className="w-full py-2 rounded-lg border-2 border-[#DDD8D2] text-[#6B6560] text-xs font-medium hover:border-[#D44B0A] hover:text-[#D44B0A] transition-colors">
+                  <button variant="outline" size="sm" className="w-full"
+                    onClick={() => navigate(`/bookings/${b.id}`)}>
                     View Details
                   </button>
                 </div>
@@ -164,8 +163,8 @@ export default function BookingList() {
 
             {hasMore && (
               <div className="mt-6 text-center">
-                <button onClick={loadMore} disabled={loadingMore}
-                  className="px-8 py-3 rounded-xl border-2 border-[#DDD8D2] text-[#6B6560] text-sm font-medium hover:border-[#D44B0A] hover:text-[#D44B0A] transition-colors disabled:opacity-50">
+                <button variant="outline" size="md"
+                  onClick={loadMore} disabled={loadingMore}>
                   {loadingMore ? 'Loading...' : 'Load More'}
                 </button>
               </div>

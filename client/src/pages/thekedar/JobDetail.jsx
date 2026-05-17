@@ -36,7 +36,7 @@ function OtpDisplayBox({ otp }) {
   return (
     <div className="rounded-xl p-5 mb-6 text-center" style={{ background: '#FDF0E8', border: '1px solid #F5E0CC' }}>
       <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: '#6B6560' }}>
-        🔑 OTP Generated — Share with Worker
+        OTP Generated — Share with Worker
       </p>
       <div className="flex justify-center gap-3 mb-3">
         {otp.split('').map((d, i) => (
@@ -123,7 +123,7 @@ function DispatchModal({ booking, workers, onClose, onDispatch }) {
                   </p>
                 </div>
                 <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-[#D44B0A] bg-[#D44B0A]' : 'border-[#DDD8D2]'}`}>
-                  {isSelected && <span className="text-white text-xs font-bold">✓</span>}
+                  {isSelected && <span className="text-white text-xs font-bold">Selected</span>}
                 </div>
               </button>
             );
@@ -253,7 +253,7 @@ export default function JobDetail() {
                       animation: active ? 'pulse-ring 1.5s infinite' : 'none',
                     }}
                   >
-                    {done ? '✓' : idx + 1}
+                    {done ? 'Done' : idx + 1}
                   </div>
                   <p className="mt-1.5 text-[10px] font-medium text-center leading-tight"
                     style={{ color: done ? '#0E0D0C' : '#DDD8D2' }}>
@@ -321,7 +321,7 @@ export default function JobDetail() {
         {/* Waiting for OTP verification */}
         {booking.booking_status === 'dispatched' && (
           <div className="rounded-xl p-5 mb-6 text-center" style={{ background: '#EFF6FF', border: '1px solid #C7D9F5' }}>
-            <p className="text-sm font-bold mb-1" style={{ color: '#1A4ED8' }}>⏳ Waiting for Customer</p>
+            <p className="text-sm font-bold mb-1" style={{ color: '#1A4ED8' }}>Waiting for Customer</p>
             <p className="text-xs" style={{ color: '#6B6560' }}>Workers are at the location. Waiting for customer to verify OTP.</p>
           </div>
         )}

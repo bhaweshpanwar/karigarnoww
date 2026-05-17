@@ -1,11 +1,13 @@
 package com.karigarnow.service;
 
 import com.karigarnow.dto.request.AddressRequest;
+import com.karigarnow.exception.BadRequestException;
 import com.karigarnow.exception.ForbiddenException;
 import com.karigarnow.exception.ResourceNotFoundException;
 import com.karigarnow.model.Address;
 import com.karigarnow.model.User;
 import com.karigarnow.repository.AddressRepository;
+import com.karigarnow.repository.BookingRepository;
 import com.karigarnow.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class AddressService {
 
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
 
     public List<Address> getAddressesByUserId(UUID userId) {
         return addressRepository.findByUserId(userId);
@@ -93,6 +96,14 @@ public class AddressService {
 
         if (!address.getUser().getId().equals(userId)) {
             throw new ForbiddenException("You are not authorized to delete this address");
+        }
+
+        if (Boolean.TRUE.equals(address.getIsPrimary())) {
+            throw new BadRequestException("Cannot delete primary address. Please set another address as primary first.");
+        }
+
+        if (bookingRepository.existsByAddressId(addressId)) {
+            throw new BadRequestException("Cannot delete address as it is linked to one or more bookings.");
         }
 
         addressRepository.delete(address);

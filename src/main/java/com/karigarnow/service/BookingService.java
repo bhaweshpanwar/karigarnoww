@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@lombok.extern.slf4j.Slf4j
 public class BookingService {
 
     private final BookingRepository bookingRepository;
@@ -38,12 +39,13 @@ public class BookingService {
     private final EarningsRepository earningsRepository;
 
     private static final BigDecimal PLATFORM_COMMISSION = new BigDecimal("0.05");
-    private static final int MIN_HOURS = 2;
     private static final SecureRandom random = new SecureRandom();
 
     // ---------- CREATE BOOKING ----------
     @Transactional
     public ApiResponse<BookingResponse> createBooking(CreateBookingRequest request, UUID consumerId) {
+        log.info("Creating booking for consumer {} with thekedar {}", consumerId, request.getThekedarId());
+
         // Validate thekedar exists
         Thekedar thekedar = thekedarRepository.findById(request.getThekedarId())
                 .orElseThrow(() -> new ResourceNotFoundException("Thekedar not found"));
@@ -58,12 +60,19 @@ public class BookingService {
         Address address = addressRepository.findById(request.getAddressId())
                 .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
 
-        // Calculate total_amount = custom_rate * workers_needed * min_hours
-        BigDecimal customRate = thekedarService.getCustomRate();
+        // Validate team size
         int workersNeeded = request.getWorkersNeeded() != null ? request.getWorkersNeeded() : 1;
+        if (thekedar.getTeamSize() == null || thekedar.getTeamSize() < workersNeeded) {
+            log.warn("Booking failed: Insufficient workers. Requested {}, has {}", workersNeeded, thekedar.getTeamSize());
+            throw new BadRequestException("Thekedar does not have enough workers. Team size: " 
+                    + (thekedar.getTeamSize() != null ? thekedar.getTeamSize() : 0));
+        }
+
+        // Calculate total_amount = custom_rate * workers_needed
+        // (MIN_HOURS removed as per request)
+        BigDecimal customRate = thekedarService.getCustomRate();
         BigDecimal totalAmount = customRate
                 .multiply(BigDecimal.valueOf(workersNeeded))
-                .multiply(BigDecimal.valueOf(MIN_HOURS))
                 .setScale(2, RoundingMode.HALF_UP);
 
         BigDecimal platformFee = totalAmount
@@ -89,6 +98,7 @@ public class BookingService {
                 .build();
 
         booking = bookingRepository.save(booking);
+        log.info("Booking created successfully with ID: {}", booking.getId());
 
         return new ApiResponse<>(true, "Booking created successfully",
                 toBookingResponse(booking, true));

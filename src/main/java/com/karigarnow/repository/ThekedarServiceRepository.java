@@ -16,13 +16,23 @@ public interface ThekedarServiceRepository extends JpaRepository<ThekedarService
 
     Optional<ThekedarService> findByServiceIdAndThekedarId(UUID serviceId, UUID thekedarId);
 
+    default Optional<ThekedarService> findByThekedarIdAndServiceId(UUID thekedarId, UUID serviceId) {
+        return findByServiceIdAndThekedarId(serviceId, thekedarId);
+    }
+
+    @Query("SELECT ts FROM ThekedarService ts JOIN FETCH ts.service WHERE ts.thekedar.id = :thekedarId")
+    java.util.List<ThekedarService> findByThekedarId(@Param("thekedarId") UUID thekedarId);
+
+    void deleteByThekedarIdAndServiceId(UUID thekedarId, UUID serviceId);
+
     // Sort by rating (default)
     @Query("""
         SELECT ts FROM ThekedarService ts
         JOIN FETCH ts.thekedar t
         JOIN FETCH t.user
         WHERE ts.service.id = :serviceId
-        AND t.isOnline = true
+        AND t.isOnline IS TRUE
+        AND t.user.active IS TRUE
         ORDER BY t.ratingAverage DESC
         """)
     Page<ThekedarService> findByServiceIdAndThekedarIsOnline(
@@ -35,7 +45,8 @@ public interface ThekedarServiceRepository extends JpaRepository<ThekedarService
         JOIN FETCH ts.thekedar t
         JOIN FETCH t.user
         WHERE ts.service.id = :serviceId
-        AND t.isOnline = true
+        AND t.isOnline IS TRUE
+        AND t.user.active IS TRUE
         ORDER BY ts.customRate ASC
         """)
     Page<ThekedarService> findByServiceIdAndThekedarIsOnlineOrderByPrice(
@@ -48,7 +59,8 @@ public interface ThekedarServiceRepository extends JpaRepository<ThekedarService
         JOIN FETCH ts.thekedar t
         JOIN FETCH t.user u
         WHERE ts.service.id = :serviceId
-        AND t.isOnline = true
+        AND t.isOnline IS TRUE
+        AND t.user.active IS TRUE
         AND (LOWER(u.name) LIKE LOWER(CONCAT('%', :search, '%'))
              OR LOWER(t.location) LIKE LOWER(CONCAT('%', :search, '%')))
         ORDER BY t.ratingAverage DESC
@@ -64,7 +76,8 @@ public interface ThekedarServiceRepository extends JpaRepository<ThekedarService
         JOIN FETCH ts.thekedar t
         JOIN FETCH t.user u
         WHERE ts.service.id = :serviceId
-        AND t.isOnline = true
+        AND t.isOnline IS TRUE
+        AND t.user.active IS TRUE
         AND (LOWER(u.name) LIKE LOWER(CONCAT('%', :search, '%'))
              OR LOWER(t.location) LIKE LOWER(CONCAT('%', :search, '%')))
         ORDER BY ts.customRate ASC

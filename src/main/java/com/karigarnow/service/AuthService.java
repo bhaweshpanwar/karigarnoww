@@ -7,14 +7,18 @@ import com.karigarnow.dto.response.AuthResponse;
 import com.karigarnow.dto.response.UserResponse;
 import com.karigarnow.exception.GoogleAuthException;
 import com.karigarnow.exception.UserAlreadyExistsException;
+import com.karigarnow.model.Thekedar;
 import com.karigarnow.model.User;
+import com.karigarnow.repository.ThekedarRepository;
 import com.karigarnow.repository.UserRepository;
 import com.karigarnow.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 @Service
@@ -22,9 +26,11 @@ import java.util.Map;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final ThekedarRepository thekedarRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    @Transactional
     public Map<String, Object> register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new UserAlreadyExistsException("Email already registered");
@@ -42,6 +48,10 @@ public class AuthService {
 
         user = userRepository.save(user);
 
+        if ("thekedar".equals(user.getRole())) {
+            createInitialThekedarProfile(user);
+        }
+
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole(), user.getId().toString());
 
         UserResponse userResponse = UserResponse.builder()
@@ -55,6 +65,7 @@ public class AuthService {
         return Map.of("token", token, "user", userResponse);
     }
 
+    @Transactional
     public Map<String, Object> login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
@@ -67,6 +78,11 @@ public class AuthService {
             throw new BadCredentialsException("Account is deactivated");
         }
 
+        // Fallback: Create Thekedar profile if missing
+        if ("thekedar".equals(user.getRole()) && !thekedarRepository.existsById(user.getId())) {
+            createInitialThekedarProfile(user);
+        }
+
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole(), user.getId().toString());
 
         UserResponse userResponse = UserResponse.builder()
@@ -80,6 +96,7 @@ public class AuthService {
         return Map.of("token", token, "user", userResponse);
     }
 
+    @Transactional
     public Map<String, Object> googleAuth(GoogleAuthRequest request) {
         String googleToken = request.getGoogleToken();
 
@@ -101,6 +118,10 @@ public class AuthService {
 
         return userRepository.findByAuthProviderId(googleUserId)
                 .map(user -> {
+                    // Fallback: Create Thekedar profile if missing
+                    if ("thekedar".equals(user.getRole()) && !thekedarRepository.existsById(user.getId())) {
+                        createInitialThekedarProfile(user);
+                    }
                     String token = jwtUtil.generateToken(user.getEmail(), user.getRole(), user.getId().toString());
                     UserResponse userResponse = UserResponse.builder()
                             .id(user.getId().toString())
@@ -123,6 +144,10 @@ public class AuthService {
 
                     newUser = userRepository.save(newUser);
 
+                    if ("thekedar".equals(newUser.getRole())) {
+                        createInitialThekedarProfile(newUser);
+                    }
+
                     String token = jwtUtil.generateToken(newUser.getEmail(), newUser.getRole(), newUser.getId().toString());
 
                     UserResponse userResponse = UserResponse.builder()
@@ -134,6 +159,17 @@ public class AuthService {
 
                     return Map.<String, Object>of("token", token, "user", userResponse);
                 });
+    }
+
+    private void createInitialThekedarProfile(User user) {
+        Thekedar thekedar = Thekedar.builder()
+                .user(user)
+                .teamSize(0)
+                .isOnline(false)
+                .ratingAverage(BigDecimal.ZERO)
+                .totalJobs(0)
+                .build();
+        thekedarRepository.save(thekedar);
     }
 
     // Simple Base64 URL decode for Google token payload (for MVP)

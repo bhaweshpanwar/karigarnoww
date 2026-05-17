@@ -1299,6 +1299,133 @@ Remove a worker from the thekedar's team.
 
 ---
 
+### Thekedar Module
+
+#### 29. Get My Thekedar Profile
+
+**GET** `/api/thekedars/me`
+
+Returns the full profile of the authenticated thekedar.
+
+**Auth:** Yes — Thekedar only
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Profile fetched",
+  "data": {
+    "id": "uuid",
+    "name": "Ramesh Plumber",
+    "email": "ramesh@example.com",
+    "mobile": "+919876543210",
+    "photo": "https://...",
+    "bio": "Expert plumber...",
+    "experience": "10 years",
+    "team_size": 1,
+    "rate_per_hour": 200.00,
+    "is_online": true,
+    "rating_average": 4.50,
+    "total_jobs": 120,
+    "location": "Sector 15, Noida",
+    "services": [
+      {
+        "id": "uuid",
+        "slug": "plumbing",
+        "name": "Plumbing",
+        "custom_rate": 500.00
+      }
+    ]
+  }
+}
+```
+
+---
+
+#### 30. Update My Thekedar Profile
+
+**PUT** `/api/thekedars/me`
+
+Update the authenticated thekedar's profile.
+
+**Auth:** Yes — Thekedar only
+
+**Request Body:**
+```json
+{
+  "bio": "Expert plumber with 12 years experience",
+  "experience": "12 years",
+  "team_size": 2,
+  "rate_per_hour": 250,
+  "location": "Indore, MP",
+  "is_online": true
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Profile updated",
+  "data": { ... updated profile ... }
+}
+```
+
+---
+
+#### 31. Add/Update Offered Service
+
+**POST** `/api/thekedar-services`
+
+Add a service to thekedar's offerings or update its custom rate.
+
+**Auth:** Yes — Thekedar only
+
+**Request Body:**
+```json
+{
+  "service_id": "uuid",
+  "custom_rate": 300
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Service added/updated",
+  "data": [
+    {
+      "id": "uuid",
+      "slug": "plumbing",
+      "name": "Plumbing",
+      "custom_rate": 300.00
+    }
+  ]
+}
+```
+
+---
+
+#### 32. Remove Offered Service
+
+**DELETE** `/api/thekedar-services/{service_id}`
+
+Remove a service from thekedar's offerings.
+
+**Auth:** Yes — Thekedar only
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Service removed",
+  "data": [ ... remaining services ... ]
+}
+```
+
+---
+
 ## HTTP Status Codes
 
 | Code | Description |

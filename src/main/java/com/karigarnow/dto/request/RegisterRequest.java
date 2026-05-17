@@ -17,8 +17,14 @@ public class RegisterRequest {
     private String email;
 
     @NotBlank(message = "Password is required")
+    @Pattern(
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$",
+            message = "Password must contain uppercase, lowercase, number and special character"
+    )
     private String password;
 
+    @NotBlank(message = "Mobile number is required")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Mobile number must be exactly 10 digits")
     private String mobile;
 
     @NotNull(message = "Role is required")

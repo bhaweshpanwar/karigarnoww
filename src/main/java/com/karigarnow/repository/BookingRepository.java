@@ -87,4 +87,6 @@ public interface BookingRepository extends JpaRepository<Booking, UUID> {
         WHERE b.id = :id
         """)
     Optional<Booking> findByIdWithDetails(@Param("id") UUID id);
+
+    boolean existsByAddressId(UUID addressId);
 }

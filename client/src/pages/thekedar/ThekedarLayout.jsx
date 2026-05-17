@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import api from '../../api/axios';
@@ -54,6 +54,25 @@ export default function ThekedarLayout({ children }) {
   const navigate = useNavigate();
   const [isOnline, setIsOnline] = useState(user?.is_online ?? false);
   const { showToast } = useContext(ToastContext);
+
+  useEffect(() => {
+    const checkProfile = async () => {
+      try {
+        const res = await api.get('/thekedars/me');
+        if (res.data.success) {
+          const profile = res.data.data;
+          if (!profile.bio && !profile.location && !profile.rate_per_hour) {
+            navigate('/thekedar/complete-profile');
+          }
+        }
+      } catch (err) {
+        console.error('Failed to check profile', err);
+      }
+    };
+    if (user && user.role === 'thekedar' && location.pathname !== '/thekedar/complete-profile') {
+      checkProfile();
+    }
+  }, [user, location.pathname, navigate]);
 
   const handleAvailabilityToggle = async () => {
     const newStatus = !isOnline;

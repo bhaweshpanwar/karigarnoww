@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
+import useAuth from '../../hooks/useAuth';
 
 const STATS = [
   { value: '2,400+', label: 'Verified Thekedars', accent: true },
@@ -36,6 +37,7 @@ function ServiceSkeleton() {
 
 export default function Home() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -93,15 +95,17 @@ export default function Home() {
               >
                 Book a Service
               </button>
-              <button
-                onClick={() => navigate('/register')}
-                className="px-6 py-3.5 rounded-sm text-[14px] font-bold bg-white transition-colors"
-                style={{ border: '2px solid #0E0D0C', transform: 'translateY(-2px)' }}
-                onMouseEnter={e => e.currentTarget.style.background = '#F5F1EC'}
-                onMouseLeave={e => e.currentTarget.style.background = '#FFFFFF'}
-              >
-                Register as Thekedar
-              </button>
+              {(!user || user.role !== 'thekedar') && (
+                <button
+                  onClick={() => navigate('/register')}
+                  className="px-6 py-3.5 rounded-sm text-[14px] font-bold bg-white transition-colors"
+                  style={{ border: '2px solid #0E0D0C', transform: 'translateY(-2px)' }}
+                  onMouseEnter={e => e.currentTarget.style.background = '#F5F1EC'}
+                  onMouseLeave={e => e.currentTarget.style.background = '#FFFFFF'}
+                >
+                  Register as Thekedar
+                </button>
+              )}
             </div>
           </div>
         </div>

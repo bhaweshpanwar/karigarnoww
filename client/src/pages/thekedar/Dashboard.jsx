@@ -91,10 +91,10 @@ function RequestCard({ booking, onAccept, onDecline }) {
       {accepted && acceptedBooking ? (
         <div className="text-center py-2">
           <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: '#1A6E42' }}>
-            ✓ Accepted
+            Accepted
           </p>
           <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: '#6B6560' }}>
-            🔑 OTP — Share with Worker
+            OTP — Share with Worker
           </p>
           <div className="flex justify-center gap-2 mb-3">
             {acceptedBooking.otp ? acceptedBooking.otp.split('').map((d, i) => (
