@@ -25,7 +25,6 @@ export default function Settings() {
   const [editingAddressId, setEditingAddressId] = useState(null);
   const [addressForm, setAddressForm] = useState({
     address_line1: '',
-    address_line2: '',
     city: '',
     state: '',
     country: 'India',
@@ -104,7 +103,6 @@ export default function Settings() {
   const resetAddressForm = () => {
     setAddressForm({
       address_line1: '',
-      address_line2: '',
       city: '',
       state: '',
       country: 'India',
@@ -118,7 +116,6 @@ export default function Settings() {
   const handleAddressEdit = (address) => {
     setAddressForm({
       address_line1: address.address_line1 || '',
-      address_line2: address.address_line2 || '',
       city: address.city || '',
       state: address.state || '',
       country: address.country || 'India',
@@ -134,6 +131,13 @@ export default function Settings() {
       showToast('Please fill all required fields', 'error');
       return;
     }
+    
+    // Extra safety check for 2-address limit on create
+    if (!editingAddressId && addresses.length >= 2) {
+      showToast('Maximum 2 addresses allowed', 'error');
+      return;
+    }
+
     setAddressSaving(true);
     try {
       if (editingAddressId) {
@@ -307,13 +311,16 @@ export default function Settings() {
         <div className="p-6 rounded-xl border-2 border-[#DDD8D2] bg-white">
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-base font-bold text-[#0E0D0C]">My Addresses</h2>
-            {!addressFormVisible && (
+            {!addressFormVisible && addresses.length < 2 && (
               <button
-                onClick={() => { setAddressFormVisible(true); setEditingAddressId(null); resetAddressForm(); }}
+                onClick={() => { resetAddressForm(); setAddressFormVisible(true); }}
                 className="text-sm text-[#D44B0A] font-semibold hover:underline"
               >
                 + Add Address
               </button>
+            )}
+            {addresses.length >= 2 && !addressFormVisible && (
+              <span className="text-xs text-[#6B6560] italic font-medium">Max 2 addresses added</span>
             )}
           </div>
 
@@ -334,7 +341,7 @@ export default function Settings() {
                 <div key={addr.id} className="p-4 rounded-lg border-2 border-[#DDD8D2] bg-[#FDFCFA]">
                   <div className="flex items-start justify-between">
                     <div className="flex-1 text-sm text-[#0E0D0C]">
-                      <p className="font-medium">{addr.address_line1}{addr.address_line2 ? `, ${addr.address_line2}` : ''}</p>
+                      <p className="font-medium">{addr.address_line1}</p>
                       <p className="text-[#6B6560]">{addr.city}, {addr.state} {addr.postal_code}</p>
                       <p className="text-[#6B6560]">{addr.country}</p>
                       {addr.is_primary && (
@@ -358,14 +365,9 @@ export default function Settings() {
                 <div className="p-5 rounded-xl border-2 border-[#D44B0A] bg-[#FFFAF7] space-y-4">
                   <h3 className="text-sm font-bold text-[#0E0D0C]">{editingAddressId ? 'Edit Address' : 'Add New Address'}</h3>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-widest text-[#A89E97] mb-1.5">Address Line 1 *</label>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-[#A89E97] mb-1.5">Address Line *</label>
                     <input type="text" value={addressForm.address_line1} onChange={e => setAddressForm(f => ({ ...f, address_line1: e.target.value }))}
-                      className="w-full px-4 py-3 rounded-lg bg-white border-2 border-[#DDD8D2] text-[#0E0D0C] text-sm outline-none focus:border-[#0E0D0C]" placeholder="House/Flat No., Street" />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-widest text-[#A89E97] mb-1.5">Address Line 2</label>
-                    <input type="text" value={addressForm.address_line2} onChange={e => setAddressForm(f => ({ ...f, address_line2: e.target.value }))}
-                      className="w-full px-4 py-3 rounded-lg bg-white border-2 border-[#DDD8D2] text-[#0E0D0C] text-sm outline-none focus:border-[#0E0D0C]" placeholder="Landmark, Area" />
+                      className="w-full px-4 py-3 rounded-lg bg-white border-2 border-[#DDD8D2] text-[#0E0D0C] text-sm outline-none focus:border-[#0E0D0C]" placeholder="House/Flat No., Street, Landmark" />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
