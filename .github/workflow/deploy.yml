@@ -3,7 +3,7 @@ name: Deploy Spring Boot App
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
@@ -21,7 +21,7 @@ jobs:
           script: |
             cd ~/karigarnoww
 
-            git pull origin main
+            git pull origin master
 
             mvn clean package -DskipTests
 
